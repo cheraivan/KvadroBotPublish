@@ -14,6 +14,7 @@ namespace KopterBot.DTO
         public DbSet<UsersDronsInclude> usersDronsIncludes { get; set; }
         public DbSet<AdminDTO> Admins { get; set; }
         public DbSet<ProposalDTO> proposalsDTO { get; set; }
+        public DbSet<CountPropose> CountPurpose { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

@@ -15,7 +15,7 @@ namespace KopterBot.Bot
 
         public async Task BaseAdminMessage(MessageEventArgs message)
         {
-
+            
         }
     }
 }

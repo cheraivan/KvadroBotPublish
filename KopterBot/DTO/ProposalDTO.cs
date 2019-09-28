@@ -16,6 +16,8 @@ namespace KopterBot.DTO
 
         public string Adress { get; set; }
 
+        public string RealAdress { get; set; }
+
         public float?  longtitude{ get; set; }
         public float? latitude { get; set; }
 

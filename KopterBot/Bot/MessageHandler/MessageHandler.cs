@@ -15,6 +15,7 @@ using System.Xml;
 using System.Linq;
 using KopterBot.Geolocate;
 using Microsoft.EntityFrameworkCore;
+using KopterBot.Bot.CommonHandler;
 
 namespace KopterBot.Bot
 {
@@ -24,6 +25,7 @@ namespace KopterBot.Bot
         TelegramBotClient client;
         ApplicationContext db;
         #region repository
+        AdminsPush adminsPush;
         UserRepository userRepository;
         GenericRepository<UserDTO> genericUserRepository;
         DronRepository dronRepository;
@@ -43,6 +45,7 @@ namespace KopterBot.Bot
             hubRepository = new HubRepository();
             adminRepository = new AdminRepository();
             proposalRepository = new ProposalRepository();
+            adminsPush = new AdminsPush(client);
         }
 
         #region PrivateHandlers
@@ -63,48 +66,61 @@ namespace KopterBot.Bot
 
                 await genericUserRepository.Update(user);
                 await userRepository.ChangeAction(chatid, "Платная регистрация со страховкой", 2);
-                await client.SendTextMessageAsync(chatid, "Введите марку дрона");
+                //   await client.SendTextMessageAsync(chatid, "Введите марку дрона");
+                await client.SendTextMessageAsync(chatid, "Введите телефон");
                 return;
             }
+    
             if(currentStep == 2)
             {
                 await proposalRepository.CreateProposal(chatid);
 
-                dron.Mark = message;
-                await dronRepository.CreateDron(dron);
+                /*   dron.Mark = message;
+                   await dronRepository.CreateDron(dron);*/
+                user.Phone = message;
+                await genericUserRepository.Update(user);
                 await userRepository.ChangeAction(chatid, "Платная регистрация со страховкой", 3);
-                await client.SendTextMessageAsync(chatid, "Введите тип страховки");
+                await client.SendTextMessageAsync(chatid, "Введите марку дрона");
                 return;
             }
             if(currentStep == 3)
             {
-                proposal =await proposalRepository.GetCurrentProposal(chatid);
-                proposal.TypeOfInsurance = message;
-                await proposalRepository.UpdateProposal(proposal);
-         
+                /*    proposal =await proposalRepository.GetCurrentProposal(chatid);
+                    proposal.TypeOfInsurance = message;*/
+                dron.Mark = message;
+                await dronRepository.CreateDron(dron);
+                
                 await userRepository.ChangeAction(chatid, "Платная регистрация со страховкой",4);
-                await client.SendTextMessageAsync(chatid, "Введите адресс доставки");
+                await client.SendTextMessageAsync(chatid, "Введите тип страховки");
                 return;
             }
             if(currentStep == 4)
             {
-                proposal.Adress = message;
+                proposal.TypeOfInsurance = message;
                 await proposalRepository.UpdateProposal(proposal);
                 await userRepository.ChangeAction(chatid, "Платная регистрация со страховкой", 5);
-                await client.SendTextMessageAsync(chatid,"Сбросьте вашу геолокацию");
+                await client.SendTextMessageAsync(chatid,"Введите адрес");
             }
             if(currentStep == 5)
+            {
+                proposal.Adress = message;
+                await proposalRepository.UpdateProposal(proposal);
+                await userRepository.ChangeAction(chatid, "Платная регистрация со страховкой", 6);
+                await client.SendTextMessageAsync(chatid, "Сбросьте вашу геопозицию");
+            }
+            if(currentStep == 6)
             {
                 if(messageObject.Message.Location!=null)
                 {
                     proposal.longtitude = messageObject.Message.Location.Longitude;
                     proposal.latitude = messageObject.Message.Location.Latitude;
+                    string realAdres = await GeolocateHandler.GetAddressFromCordinat(proposal.longtitude, proposal.latitude);
+                    proposal.RealAdress = realAdres;
                     await proposalRepository.UpdateProposal(proposal);
                     await genericUserRepository.Update(user);
-                    string realAdres =await GeolocateHandler.GetAddressFromCordinat(proposal.longtitude, proposal.latitude);
-                    await client.SendTextMessageAsync(chatid, $"Твой адрес:{realAdres}");
-                    await client.SendTextMessageAsync(chatid, "Запретные зоны ниже");
-                    await client.SendTextMessageAsync(chatid, GeolocateHandler.GetRestrictedAreas(proposal.longtitude, proposal.latitude));
+                    await client.SendTextMessageAsync(chatid, "Ожидаем оплату,если все нормально - кидаем клаву с этими кнопками и если все оплатил кидаем в админ-уведомление"
+                        , 0, false, false, 0,KeyBoardHandler.Murkup_After_Registration());
+                    await adminsPush.MessageRequisitionAsync(chatid);
                 }
             }
         }

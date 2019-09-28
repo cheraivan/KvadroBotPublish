@@ -16,6 +16,7 @@ namespace KopterBot.DTO
         public long ChatId { get; set; }
         public string Login { get; set; }
         public string FIO { get; set; }
+        public string Phone { get; set; }
         public StepDTO step { get; set; }
         public ICollection<ProposalDTO> proposals { get; set; }
         public UserDTO()

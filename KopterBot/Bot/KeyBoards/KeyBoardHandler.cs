@@ -67,5 +67,33 @@ namespace KopterBot.Bot
             };
             return keyboard;
         }
+        public static IReplyMarkup Murkup_After_Registration()
+        {
+            return new ReplyKeyboardMarkup
+            {
+                Keyboard = new[]
+                {
+                    new[]
+                    {
+                        new KeyboardButton("Хочу лететь здесь и сейчас")
+                    },
+                    new[]
+                    {
+                        new KeyboardButton("Запланировать полёт")
+
+                    },
+                    new[]
+                    {
+                        new KeyboardButton("Партнеры рядом")
+
+                    },
+                    new[]
+                    {
+                        new KeyboardButton("SOS")
+                    }
+                },
+                ResizeKeyboard = true
+            };
+        }
     }
 }
