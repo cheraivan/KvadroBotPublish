@@ -1,0 +1,11 @@
+C:\Users\User\source\repos\KopterBot\KopterBot\bin\Debug\netcoreapp2.2\KopterBot.deps.json
+C:\Users\User\source\repos\KopterBot\KopterBot\bin\Debug\netcoreapp2.2\KopterBot.runtimeconfig.json
+C:\Users\User\source\repos\KopterBot\KopterBot\bin\Debug\netcoreapp2.2\KopterBot.runtimeconfig.dev.json
+C:\Users\User\source\repos\KopterBot\KopterBot\bin\Debug\netcoreapp2.2\KopterBot.dll
+C:\Users\User\source\repos\KopterBot\KopterBot\obj\Debug\netcoreapp2.2\KopterBot.csprojAssemblyReference.cache
+C:\Users\User\source\repos\KopterBot\KopterBot\obj\Debug\netcoreapp2.2\KopterBot.csproj.CoreCompileInputs.cache
+C:\Users\User\source\repos\KopterBot\KopterBot\obj\Debug\netcoreapp2.2\KopterBot.AssemblyInfoInputs.cache
+C:\Users\User\source\repos\KopterBot\KopterBot\obj\Debug\netcoreapp2.2\KopterBot.AssemblyInfo.cs
+C:\Users\User\source\repos\KopterBot\KopterBot\bin\Debug\netcoreapp2.2\KopterBot.pdb
+C:\Users\User\source\repos\KopterBot\KopterBot\obj\Debug\netcoreapp2.2\KopterBot.dll
+C:\Users\User\source\repos\KopterBot\KopterBot\obj\Debug\netcoreapp2.2\KopterBot.pdb
