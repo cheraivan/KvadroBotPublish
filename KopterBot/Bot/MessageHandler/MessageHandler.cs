@@ -14,6 +14,7 @@ using KopterBot.Commons;
 using System.Xml;
 using System.Linq;
 using KopterBot.Geolocate;
+using Microsoft.EntityFrameworkCore;
 
 namespace KopterBot.Bot
 {
@@ -29,6 +30,7 @@ namespace KopterBot.Bot
         BotRepository botRepository;
         HubRepository hubRepository;
         AdminRepository adminRepository;
+        ProposalRepository proposalRepository;
         #endregion
         public MessageHandler(TelegramBotClient client,ApplicationContext context)
         {
@@ -40,6 +42,7 @@ namespace KopterBot.Bot
             botRepository = new BotRepository();
             hubRepository = new HubRepository();
             adminRepository = new AdminRepository();
+            proposalRepository = new ProposalRepository();
         }
 
         #region PrivateHandlers
@@ -52,9 +55,12 @@ namespace KopterBot.Bot
             int currentStep = userRepository.GetCurrentActionStep(chatid);
             UserDTO user = await genericUserRepository.FindById(chatid);
             DronDTO dron = new DronDTO();
+            ProposalDTO proposal = await proposalRepository.GetCurrentProposal(chatid); 
+
             if (currentStep == 1)
             {
                 user.FIO = message;
+
                 await genericUserRepository.Update(user);
                 await userRepository.ChangeAction(chatid, "Платная регистрация со страховкой", 2);
                 await client.SendTextMessageAsync(chatid, "Введите марку дрона");
@@ -62,7 +68,8 @@ namespace KopterBot.Bot
             }
             if(currentStep == 2)
             {
-                // на первое время,потом вероятнее всего дроны будут из выборки тянуться
+                await proposalRepository.CreateProposal(chatid);
+
                 dron.Mark = message;
                 await dronRepository.CreateDron(dron);
                 await userRepository.ChangeAction(chatid, "Платная регистрация со страховкой", 3);
@@ -71,16 +78,18 @@ namespace KopterBot.Bot
             }
             if(currentStep == 3)
             {
-                user.TypeOfInsurance = message;
-                await genericUserRepository.Update(user);
+                proposal =await proposalRepository.GetCurrentProposal(chatid);
+                proposal.TypeOfInsurance = message;
+                await proposalRepository.UpdateProposal(proposal);
+         
                 await userRepository.ChangeAction(chatid, "Платная регистрация со страховкой",4);
                 await client.SendTextMessageAsync(chatid, "Введите адресс доставки");
                 return;
             }
             if(currentStep == 4)
             {
-                user.Adress = message;
-                await genericUserRepository.Update(user);
+                proposal.Adress = message;
+                await proposalRepository.UpdateProposal(proposal);
                 await userRepository.ChangeAction(chatid, "Платная регистрация со страховкой", 5);
                 await client.SendTextMessageAsync(chatid,"Сбросьте вашу геолокацию");
             }
@@ -88,14 +97,14 @@ namespace KopterBot.Bot
             {
                 if(messageObject.Message.Location!=null)
                 {
-                    user.longtitude = messageObject.Message.Location.Longitude;
-                    user.latitude = messageObject.Message.Location.Latitude;
-
+                    proposal.longtitude = messageObject.Message.Location.Longitude;
+                    proposal.latitude = messageObject.Message.Location.Latitude;
+                    await proposalRepository.UpdateProposal(proposal);
                     await genericUserRepository.Update(user);
-                    string realAdres =await GeolocateHandler.GetAddressFromCordinat(user.longtitude, user.latitude);
+                    string realAdres =await GeolocateHandler.GetAddressFromCordinat(proposal.longtitude, proposal.latitude);
                     await client.SendTextMessageAsync(chatid, $"Твой адрес:{realAdres}");
                     await client.SendTextMessageAsync(chatid, "Запретные зоны ниже");
-                    await client.SendTextMessageAsync(chatid, GeolocateHandler.GetRestrictedAreas(user.longtitude, user.latitude));
+                    await client.SendTextMessageAsync(chatid, GeolocateHandler.GetRestrictedAreas(proposal.longtitude, proposal.latitude));
                 }
             }
         }
@@ -120,14 +129,6 @@ namespace KopterBot.Bot
 
                 return;
             }
-
-
-           /* if(chatid == 700781435)
-            {
-                await client.SendTextMessageAsync(chatid, "Режим пидараса активирован",0,false,false,0,KeyBoardHandler.MarkupForPidor());
-                return;
-            }*/
-
             await UserLogs.WriteLog(chatid, messageText);
 
             if (messageText == "/start")
@@ -163,6 +164,7 @@ namespace KopterBot.Bot
 
             if (messageText == "Назад")
             {
+                await proposalRepository.DeleteNotFillProposalAsync(chatid);
                 await userRepository.ChangeAction(chatid, "NULL", 0);
                 await CommandHandler_Start(chatid);
 

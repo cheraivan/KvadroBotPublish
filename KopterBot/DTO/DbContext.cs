@@ -13,6 +13,7 @@ namespace KopterBot.DTO
         public DbSet<HubDTO> Hubs { get; set; } 
         public DbSet<UsersDronsInclude> usersDronsIncludes { get; set; }
         public DbSet<AdminDTO> Admins { get; set; }
+        public DbSet<ProposalDTO> proposalsDTO { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

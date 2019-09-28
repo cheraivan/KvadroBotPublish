@@ -23,6 +23,7 @@ namespace KopterBot.Repository
                 user = new UserDTO();
                 user.ChatId = chatid;
                 user.step = new StepDTO();
+                user.proposals = new List<ProposalDTO>();
                 await repository.Create(user);
             }
             return;

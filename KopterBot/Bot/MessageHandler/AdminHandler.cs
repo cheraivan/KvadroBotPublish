@@ -13,8 +13,6 @@ namespace KopterBot.Bot
     { 
         public AdminHandler(TelegramBotClient client, ApplicationContext db) : base(client, db) { }
 
-
-
         public async Task BaseAdminMessage(MessageEventArgs message)
         {
 

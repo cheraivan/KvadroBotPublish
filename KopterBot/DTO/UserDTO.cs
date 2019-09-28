@@ -9,7 +9,6 @@ namespace KopterBot.DTO
 {
     class UserDTO:BaseRepository,IBaseEntity
     {
-        private string m_BortNumber;
         private bool disposed = false;
 
         #region Properties
@@ -17,29 +16,12 @@ namespace KopterBot.DTO
         public long ChatId { get; set; }
         public string Login { get; set; }
         public string FIO { get; set; }
-        public string TypeOfInsurance { get; set; }
-        public string Adress { get; set; }
-        public string Mode { get; set; }
         public StepDTO step { get; set; }
-
-        public float longtitude { get; set; }
-        public float latitude { get; set; }
-
-        public string BortNumber
+        public ICollection<ProposalDTO> proposals { get; set; }
+        public UserDTO()
         {
-            get
-            {
-                return m_BortNumber;
-            }
-            set
-            {
-                if(Common.isDigit(value))
-                {
-                    m_BortNumber = value;
-                }
-            }
+            proposals = new List<ProposalDTO>();
         }
-
         #endregion
 
         public void Dispose()

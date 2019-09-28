@@ -12,6 +12,15 @@ namespace KopterBot.DTO
 
         public long ChatId { get; set; }
 
+        public string TypeOfInsurance { get; set; }
 
+        public string Adress { get; set; }
+
+        public float?  longtitude{ get; set; }
+        public float? latitude { get; set; }
+
+        public string BortNumber { get; set; }
+
+        public UserDTO User { get; set; }
     }
 }

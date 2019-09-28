@@ -30,7 +30,7 @@ namespace KopterBot.Commons
     }
     class GeolocateRequest:BaseRequest
     {
-        public GeolocateRequest(float longtitude, float lautitude)
+        public GeolocateRequest(float? longtitude, float? lautitude)
         {
             string coordinat = longtitude + "," + lautitude;
             url = "https://geocode-maps.yandex.ru/1.x/" + $"?geocode={coordinat}&apikey={Constant.APIKEY}&kind=house";
