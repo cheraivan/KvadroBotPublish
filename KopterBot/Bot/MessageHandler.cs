@@ -127,6 +127,7 @@ namespace KopterBot.Bot
             }*/
 
             await UserLogs.WriteLog(chatid, messageText);
+
             if (messageText == "/start")
             {
                 await CommandHandler_Start(chatid);
@@ -149,6 +150,11 @@ namespace KopterBot.Bot
                 await client.SendTextMessageAsync(700781435, $"{message.Message.Chat.Username} хочет с вами связаться", 0, false, false, 0, keyboard);
             }
 
+            // меняем пользователя на админа
+            if(messageText == "/op")
+            {
+
+            }
 
             /*
              *Меняем действие на NULL, обнуляем вводимые данные пользователя 
