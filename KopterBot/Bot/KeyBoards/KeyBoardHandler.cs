@@ -7,31 +7,6 @@ namespace KopterBot.Bot
 {
     class KeyBoardHandler
     {
-
-        public static IReplyMarkup MarkupForPidor()
-        {
-            IReplyMarkup keyboard = new ReplyKeyboardMarkup
-            {
-                Keyboard = new[]
-                {
-                    new[]
-                    {
-                        new KeyboardButton("Дать в жопу двум мужикам")
-                    },
-                    new[]
-                    {
-                        new KeyboardButton("Отсосать хуй корешу")
-                    },
-                    new[]
-                    {
-                        new KeyboardButton("Наклонится в душевой")
-                    }
-                },
-                ResizeKeyboard = true
-            };
-            return keyboard;
-        }
-
         public static IReplyMarkup Markup_Back_From_First_Action()
         {
             return new ReplyKeyboardMarkup
@@ -58,7 +33,7 @@ namespace KopterBot.Bot
                     },
                     new[]
                     {
-                        new KeyboardButton("Режим пидараса")
+                        new KeyboardButton("Режим продавца")
                     }
                 },
                 ResizeKeyboard = true

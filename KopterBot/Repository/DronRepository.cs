@@ -8,13 +8,11 @@ using System.Threading.Tasks;
 
 namespace KopterBot.Repository
 {
-    class DronRepository
+    class DronRepository:BaseRepository
     {
-        private ApplicationContext db;
         GenericRepository<DronDTO> drons;
-        public DronRepository(ApplicationContext db)
+        public DronRepository()
         {
-            this.db = db;
             drons = new GenericRepository<DronDTO>(db);
         }
 

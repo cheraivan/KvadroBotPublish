@@ -10,16 +10,14 @@ namespace KopterBot.Repository
 {
     class UserRepository:UserDTO
     {
-        private  ApplicationContext context;
         private GenericRepository<UserDTO> repository;
-        public UserRepository(ApplicationContext context)
+        public UserRepository()
         {
-            this.context = context;
-            repository = new GenericRepository<UserDTO>(context);
+            repository = new GenericRepository<UserDTO>(db);
         }
         public async Task AuthenticateUser(long chatid)
         {
-            UserDTO user = await context.Users.FirstOrDefaultAsync(i => i.ChatId == chatid);
+            UserDTO user = await db.Users.FirstOrDefaultAsync(i => i.ChatId == chatid);
             if (user == null)
             {
                 user = new UserDTO();
@@ -31,7 +29,7 @@ namespace KopterBot.Repository
         }
         public string GetCurrentActionName(long chatid)
         {
-          var lst = context.Users.Join(context.Steps,
+          var lst = db.Users.Join(db.Steps,
                i => i.ChatId,
                s => s.ChatId,
                (i, s) => new UserDTO
@@ -41,7 +39,7 @@ namespace KopterBot.Repository
             return lst.Count() == 0 ? "null" : lst[0].step.NameOfStep;
         }
         public int GetCurrentActionStep(long chatid) =>
-            context.Users.Join(context.Steps,
+            db.Users.Join(db.Steps,
                 i => i.ChatId,
                 s => s.ChatId,
                 (i, s) => new UserDTO
@@ -50,7 +48,7 @@ namespace KopterBot.Repository
                 }).ToList()[0].step.CurrentStep;
         public async Task RecoveryUser(long chatid)
         {
-            UserDTO user = await context.Users.FirstOrDefaultAsync(i => i.ChatId == chatid);
+            UserDTO user = await db.Users.FirstOrDefaultAsync(i => i.ChatId == chatid);
             if (user == null)
                 await AuthenticateUser(chatid);
             else
@@ -61,13 +59,13 @@ namespace KopterBot.Repository
         }
         public async Task ChangeAction(long chatid,string nameAction,int step)
         {
-            UserDTO user = await context.Users.FirstOrDefaultAsync(i => i.ChatId == chatid);
+            UserDTO user = await db.Users.FirstOrDefaultAsync(i => i.ChatId == chatid);
             if (user == null)
             {
                 await AuthenticateUser(chatid);
                 return;
             }
-            UserDTO _user = context.Users.Join(context.Steps,
+            UserDTO _user = db.Users.Join(db.Steps,
                 i => i.ChatId,
                 s => s.ChatId,
                 (i, s) => new UserDTO

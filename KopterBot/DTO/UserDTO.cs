@@ -1,12 +1,13 @@
 ﻿using KopterBot.Commons;
 using KopterBot.Interfaces;
+using KopterBot.Repository;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace KopterBot.DTO
 {
-    class UserDTO:IBaseEntity
+    class UserDTO:BaseRepository,IBaseEntity
     {
         private string m_BortNumber;
         private bool disposed = false;
@@ -21,7 +22,7 @@ namespace KopterBot.DTO
         public string Mode { get; set; }
         public StepDTO step { get; set; }
 
-        public float longitud { get; set; }
+        public float longtitude { get; set; }
         public float latitude { get; set; }
 
         public string BortNumber

@@ -7,14 +7,12 @@ using System.Threading.Tasks;
 
 namespace KopterBot.Repository
 {
-    class BotRepository
+    class BotRepository:BaseRepository
     {
-        private ApplicationContext context;
         GenericRepository<UserDTO> genericRepository;
-        public BotRepository(ApplicationContext context)
+        public BotRepository()
         {
-            this.context = context;
-            genericRepository = new GenericRepository<UserDTO>(context);
+            genericRepository = new GenericRepository<UserDTO>(db);
         }
       
     }

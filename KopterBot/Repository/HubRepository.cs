@@ -7,13 +7,12 @@ using System.Threading.Tasks;
 
 namespace KopterBot.Repository
 {
-    class HubRepository
+    class HubRepository:BaseRepository
     {
-        private ApplicationContext db;
+        
         private static GenericRepository<HubDTO> genericRepository;
-        public HubRepository(ApplicationContext db)
+        public HubRepository()
         {
-            this.db = db;
             genericRepository = new GenericRepository<HubDTO>(db);
         }
 

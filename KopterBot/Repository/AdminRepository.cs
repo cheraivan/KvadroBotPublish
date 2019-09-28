@@ -9,9 +9,10 @@ using Telegram.Bot;
 
 namespace KopterBot.Repository
 {
-    class AdminRepository:BaseHandler
+    class AdminRepository:BaseRepository
     {
-        public AdminRepository(TelegramBotClient client ,ApplicationContext db):base(client,db) { }
+        
+        public AdminRepository() { }
 
         #region Public_Methods
 

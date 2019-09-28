@@ -28,16 +28,18 @@ namespace KopterBot.Bot
         DronRepository dronRepository;
         BotRepository botRepository;
         HubRepository hubRepository;
+        AdminRepository adminRepository;
         #endregion
         public MessageHandler(TelegramBotClient client,ApplicationContext context)
         {
             this.client = client;
             db = context;
-            userRepository = new UserRepository(db);
+            userRepository = new UserRepository();
             genericUserRepository = new GenericRepository<UserDTO>(db);
-            dronRepository = new DronRepository(db);
-            botRepository = new BotRepository(db);
-            hubRepository = new HubRepository(db);
+            dronRepository = new DronRepository();
+            botRepository = new BotRepository();
+            hubRepository = new HubRepository();
+            adminRepository = new AdminRepository();
         }
 
         #region PrivateHandlers
@@ -86,14 +88,14 @@ namespace KopterBot.Bot
             {
                 if(messageObject.Message.Location!=null)
                 {
-                    user.longitud = messageObject.Message.Location.Longitude;
+                    user.longtitude = messageObject.Message.Location.Longitude;
                     user.latitude = messageObject.Message.Location.Latitude;
 
                     await genericUserRepository.Update(user);
-                    string realAdres =await GeolocateHandler.GetAddressFromCordinat(user.longitud, user.latitude);
+                    string realAdres =await GeolocateHandler.GetAddressFromCordinat(user.longtitude, user.latitude);
                     await client.SendTextMessageAsync(chatid, $"Твой адрес:{realAdres}");
                     await client.SendTextMessageAsync(chatid, "Запретные зоны ниже");
-                    await client.SendTextMessageAsync(chatid, GeolocateHandler.GetRestrictedAreas(user.longitud, user.latitude));
+                    await client.SendTextMessageAsync(chatid, GeolocateHandler.GetRestrictedAreas(user.longtitude, user.latitude));
                 }
             }
         }
@@ -151,11 +153,10 @@ namespace KopterBot.Bot
             }
 
             // меняем пользователя на админа
-            if(messageText == "/op")
+            if (messageText == "/op")
             {
 
             }
-
             /*
              *Меняем действие на NULL, обнуляем вводимые данные пользователя 
              * */
@@ -175,6 +176,12 @@ namespace KopterBot.Bot
                 return;
             }
 
+            if(messageText == "Режим покупателя")
+            {
+                await client.SendTextMessageAsync(chatid, "Вы зашли как покупатель"
+                    ,0,false,false,0,KeyBoardHandler.Markup_Start_BuyerMode());
+            }
+
             if (userRepository.IsUserInAction(chatid))
             {
                 string action = userRepository.GetCurrentActionName(chatid);
@@ -184,7 +191,7 @@ namespace KopterBot.Bot
                 }
                 return;
             }
-           
+
         }
     }
 }

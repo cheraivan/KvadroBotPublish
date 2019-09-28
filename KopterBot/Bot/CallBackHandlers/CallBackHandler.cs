@@ -18,7 +18,7 @@ namespace KopterBot.Bot
         HubRepository hubRepository;
         public CallBackHandler(TelegramBotClient client,ApplicationContext context):base(client,context)
         {
-            hubRepository = new HubRepository(db);
+            hubRepository = new HubRepository();
         }
 
         #region PrivateHandlers

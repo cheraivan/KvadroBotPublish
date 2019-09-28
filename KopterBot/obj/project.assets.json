@@ -6560,11 +6560,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\User\\source\\repos\\KopterBot\\KopterBot\\KopterBot.csproj",
+      "projectUniqueName": "D:\\Repositories\\KvadroBot\\KopterBot\\KopterBot.csproj",
       "projectName": "KopterBot",
-      "projectPath": "C:\\Users\\User\\source\\repos\\KopterBot\\KopterBot\\KopterBot.csproj",
+      "projectPath": "D:\\Repositories\\KvadroBot\\KopterBot\\KopterBot.csproj",
       "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\User\\source\\repos\\KopterBot\\KopterBot\\obj\\",
+      "outputPath": "D:\\Repositories\\KvadroBot\\KopterBot\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
