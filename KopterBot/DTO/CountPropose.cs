@@ -3,6 +3,7 @@ using KopterBot.Repository;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,8 @@ namespace KopterBot.DTO
 {
     class CountPropose
     {
+        [Key]
+        public int Id { get; set; }
         public int Count { get; set; }
     }
     class CountProposeHandler

@@ -29,18 +29,18 @@ namespace KopterBot.Bot
                 {
                     new[]
                     {
-                        new KeyboardButton("Режим покупателя")
+                        new KeyboardButton("Пилот")
                     },
                     new[]
                     {
-                        new KeyboardButton("Режим продавца")
+                        new KeyboardButton("Заказчик услуг")
                     }
                 },
                 ResizeKeyboard = true
             };
             return keyboard;
         }
-        public static IReplyMarkup Markup_Start_BuyerMode()
+        public static IReplyMarkup Markup_Start_Pilot_Payment_Mode()
         {
             IReplyMarkup keyboard = new ReplyKeyboardMarkup
             {
@@ -53,19 +53,48 @@ namespace KopterBot.Bot
                     new[]
                     {
                         new KeyboardButton("Платная регистрация без страховки")
-                    },
-                    new[]
-                    {
-                        new KeyboardButton("Купить страховку")
-                    },
-                    new[]
-                    {
-                        new KeyboardButton("Бесплатная регистрация")
                     }
                 },
                 ResizeKeyboard = true
             };
             return keyboard;
+        }
+        public static IReplyMarkup Murkup_Start_Pilot_UnBuyer_Mode()
+        {
+            return new ReplyKeyboardMarkup
+            {
+                Keyboard = new[]
+                {
+                    new[]
+                    {
+                        new KeyboardButton("Со страхованием")
+                    },
+                    new[]
+                    {
+                        new KeyboardButton("Без страховки")
+                    }
+                },
+                ResizeKeyboard = true
+            };
+        }
+        public static IReplyMarkup Murkup_Start_Pilot_Mode()
+        {
+            return new ReplyKeyboardMarkup
+            {
+                Keyboard = new[]
+                {
+                    new[]
+                    {
+                        new KeyboardButton("Полный функционал платно")
+                    },
+                    new[]
+                    {
+                        new KeyboardButton("Частичные возможности бесплатно")
+                    }
+                },
+                ResizeKeyboard = true
+            };
+
         }
         public static IReplyMarkup Murkup_After_Registration()
         {
@@ -90,6 +119,24 @@ namespace KopterBot.Bot
                     new[]
                     {
                         new KeyboardButton("SOS")
+                    }
+                },
+                ResizeKeyboard = true
+            };
+        }
+        public static IReplyMarkup Start_For_Buisnessmen()
+        {
+            return new ReplyKeyboardMarkup
+            {
+                Keyboard = new[]
+                {
+                    new[]
+                    {
+                        new KeyboardButton("Частный клиент")
+                    },
+                    new[]
+                    {
+                        new KeyboardButton("Корпоративный клиент")
                     }
                 },
                 ResizeKeyboard = true

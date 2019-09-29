@@ -15,6 +15,7 @@ namespace KopterBot.DTO
         public DbSet<AdminDTO> Admins { get; set; }
         public DbSet<ProposalDTO> proposalsDTO { get; set; }
         public DbSet<CountPropose> CountPurpose { get; set; }
+        public DbSet<StorageDTO> Storage { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

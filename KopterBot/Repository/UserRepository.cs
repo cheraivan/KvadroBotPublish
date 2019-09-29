@@ -23,6 +23,7 @@ namespace KopterBot.Repository
                 user = new UserDTO();
                 user.ChatId = chatid;
                 user.step = new StepDTO();
+                user.step.ChatId = chatid;
                 user.proposals = new List<ProposalDTO>();
                 await repository.Create(user);
             }
@@ -78,7 +79,11 @@ namespace KopterBot.Repository
             user.step.CurrentStep = step;
             await repository.Update(user);
         }
-
+        public async Task UpdateUser(UserDTO user)
+        {
+            db.Entry(user).State = EntityState.Modified;
+            await db.SaveChangesAsync();
+        }
         public bool IsUserInAction(long chatid)
         {
             string name = GetCurrentActionName(chatid);
@@ -88,6 +93,10 @@ namespace KopterBot.Repository
         {
             return await repository
                 .FindById(chatid) != null ? true : false;
+        }
+        public async ValueTask<UserDTO> FindById(long chatid)
+        {
+            return await db.Users.FirstOrDefaultAsync(i => i.ChatId == chatid);
         }
     }
 }

@@ -30,7 +30,7 @@ namespace KopterBot.Repository
 
         public async ValueTask<ProposalDTO> GetCurrentProposal(long chatid)
         {
-            return await db.proposalsDTO.LastOrDefaultAsync(i => i.ChatId == chatid);
+            return await db.proposalsDTO.AsNoTracking().LastOrDefaultAsync(i => i.ChatId == chatid);
         }
 
         public async Task UpdateProposal(ProposalDTO item)
@@ -45,10 +45,10 @@ namespace KopterBot.Repository
                 .CountAsync();
             if (count == 0)
                 return;
-            count = await db.proposalsDTO.Where(i => i.BortNumber == null).CountAsync();
+            count = await db.proposalsDTO.Where(i => i.longtitude == null).CountAsync();
             if (count == 0)
                 return;
-            IEnumerable<ProposalDTO> Ids = db.proposalsDTO.Where(i => i.BortNumber == null);
+            IEnumerable<ProposalDTO> Ids = db.proposalsDTO.Where(i => i.longtitude == null);
             db.proposalsDTO.RemoveRange(Ids);
             await db.SaveChangesAsync();
         }

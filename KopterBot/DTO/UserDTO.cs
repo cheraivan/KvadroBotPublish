@@ -11,6 +11,7 @@ namespace KopterBot.DTO
     {
         private bool disposed = false;
 
+
         #region Properties
         [Key]
         public long ChatId { get; set; }
