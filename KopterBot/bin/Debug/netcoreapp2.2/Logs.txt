@@ -32,4 +32,5 @@ Parameter name: index22.09.2019 14:36:41
 Index was out of range. Must be non-negative and less than the size of the collection.
 Parameter name: index22.09.2019 14:36:46
 Index was out of range. Must be non-negative and less than the size of the collection.
-Parameter name: index
+Parameter name: index29.09.2019 15:24:39
+The instance of entity type 'UserDTO' cannot be tracked because another instance with the same key value for {'ChatId'} is already being tracked. When attaching existing entities, ensure that only one entity instance with a given key value is attached. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see the conflicting key values.

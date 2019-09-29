@@ -1,12 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Linq;
 using System.Text;
 
 namespace KopterBot.DTO
 {
     class ApplicationContext:DbContext
-    { 
+    {
         public DbSet<UserDTO> Users { get; set; }
         public DbSet<StepDTO> Steps { get; set; }
         public DbSet<DronDTO> Drons { get; set; }
@@ -20,6 +22,7 @@ namespace KopterBot.DTO
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseMySQL("server=localhost;UserId=root;Password=12345;database=kvadrobot;");
+            
         }
     }
 }

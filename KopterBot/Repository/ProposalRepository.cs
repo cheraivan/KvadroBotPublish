@@ -15,7 +15,7 @@ namespace KopterBot.Repository
             UserDTO user = await db.Users.FirstOrDefaultAsync(i => i.ChatId == chatid);
             return user.proposals.Count;
         }
-        public async Task CreateProposal(long chatid)
+        public async Task Create(long chatid)
         {
             UserDTO user = await db.Users.FirstOrDefaultAsync(i => i.ChatId == chatid);
 
@@ -28,12 +28,12 @@ namespace KopterBot.Repository
             await db.SaveChangesAsync();
         }
 
-        public async ValueTask<ProposalDTO> GetCurrentProposal(long chatid)
+        public async ValueTask<ProposalDTO> FindById(long chatid)
         {
             return await db.proposalsDTO.AsNoTracking().LastOrDefaultAsync(i => i.ChatId == chatid);
         }
 
-        public async Task UpdateProposal(ProposalDTO item)
+        public async Task Update(ProposalDTO item)
         {
             db.Entry(item).State = EntityState.Modified;
             await db.SaveChangesAsync();

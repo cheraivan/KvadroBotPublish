@@ -2,6 +2,7 @@
 using KopterBot.DTO;
 using KopterBot.Interfaces;
 using KopterBot.Interfaces.Bot;
+using KopterBot.Logs;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;

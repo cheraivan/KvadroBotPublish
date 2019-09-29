@@ -22,28 +22,16 @@ namespace KopterBot.Bot
     /// <summary>
     /// ВАЖНО!!!!!!! ПОСЛЕ ПЕРВОЙ РЕГИСТРАЦИИ В КАЖДОМ РЕЖИМЕ НУЖНО ОГРАНИЧИВАТЬ ВОЗМОЖНОСТЬ РЕГИСТРИРОВАТЬСЯ
     /// </summary>
-    class MessageHandler:BaseRepository,IMessageHandler
+    class MessageHandler: RepositoryProvider, IMessageHandler
     {
         long chatid;
         TelegramBotClient client;
         #region repository
         AdminsPush adminsPush;
-        UserRepository userRepository;
-        DronRepository dronRepository;
-        BotRepository botRepository;
-        HubRepository hubRepository;
-        AdminRepository adminRepository;
-        ProposalRepository proposalRepository;
         #endregion
         public MessageHandler(TelegramBotClient client)
         {
             this.client = client;
-            userRepository = new UserRepository();
-            dronRepository = new DronRepository();
-            botRepository = new BotRepository();
-            hubRepository = new HubRepository();
-            adminRepository = new AdminRepository();
-            proposalRepository = new ProposalRepository();
             adminsPush = new AdminsPush(client);
         }
 
@@ -54,16 +42,16 @@ namespace KopterBot.Bot
         }
         private async Task CommandHandler_PaidRegistrationWithoutInsurance(long chatid,string message,MessageEventArgs messageObject)
         {
-            int currentStep = userRepository.GetCurrentActionStep(chatid);
+            int currentStep =await userRepository.GetCurrentActionStep(chatid);
             UserDTO user = await db.Users.AsNoTracking().FirstOrDefaultAsync(i => i.ChatId == chatid);
             DronDTO dron = new DronDTO();
-            ProposalDTO proposal = await proposalRepository.GetCurrentProposal(chatid);
+            ProposalDTO proposal = await proposalRepository.FindById(chatid);
             long _c = user.ChatId;
             if(currentStep == 1)
             {
                 user = await userRepository.FindById(chatid);
                 user.FIO = message;
-                await userRepository.UpdateUser(user);
+                await userRepository.Update(user);
                 await userRepository.ChangeAction(chatid, "Co страховкой", 2);
                 await client.SendTextMessageAsync(chatid, "Введите марку дрона");
                 return;
@@ -78,8 +66,8 @@ namespace KopterBot.Bot
             }
             if(currentStep == 3)
             {
-                await proposalRepository.CreateProposal(chatid);
-                proposal = await proposalRepository.GetCurrentProposal(chatid);
+                await proposalRepository.Create(chatid);
+                proposal = await proposalRepository.FindById(chatid);
                 proposal.Adress = message;
                 await userRepository.ChangeAction(chatid, "Co страховкой", 4);
                 await client.SendTextMessageAsync(chatid, "Сбросьте геопозицию");
@@ -92,7 +80,7 @@ namespace KopterBot.Bot
                     proposal.latitude = messageObject.Message.Location.Latitude;
                     string realAdres = await GeolocateHandler.GetAddressFromCordinat(proposal.longtitude, proposal.latitude);
                     proposal.RealAdress = realAdres;
-                    await proposalRepository.UpdateProposal(proposal);
+                    await proposalRepository.Update(proposal);
                     await CountProposeHandler.ChangeProposeCount();
                     await adminsPush.MessageRequisitionAsync(chatid);
                 }
@@ -100,15 +88,15 @@ namespace KopterBot.Bot
         }
         private async Task CommandHandler_PaidRegistrationWithInsurance(long chatid,string message,MessageEventArgs messageObject = null)
         {
-            int currentStep = userRepository.GetCurrentActionStep(chatid);
-            UserDTO user = await db.Users.AsNoTracking().FirstOrDefaultAsync(i => i.ChatId == chatid);
+            int currentStep =await userRepository.GetCurrentActionStep(chatid);
+            UserDTO user = await userRepository.FindById(chatid);
             DronDTO dron = new DronDTO();
-            ProposalDTO proposal = null;
+            ProposalDTO proposal = await proposalRepository.FindById(chatid);
 
             if (currentStep == 1)
             {
                 user.FIO = message;
-                await userRepository.UpdateUser(user);
+                await userRepository.Update(user);
                 await userRepository.ChangeAction(chatid, "Платная регистрация со страховкой", 2);
                 await client.SendTextMessageAsync(chatid, "Введите телефон");
                 return;
@@ -116,20 +104,15 @@ namespace KopterBot.Bot
     
             if(currentStep == 2)
             {
-                await proposalRepository.CreateProposal(chatid);
-
-                /*   dron.Mark = message;
-                   await dronRepository.CreateDron(dron);*/
+                await proposalRepository.Create(chatid);
                 user.Phone = message;
-                await userRepository.UpdateUser(user);
+                await userRepository.Update(user);
                 await userRepository.ChangeAction(chatid, "Платная регистрация со страховкой", 3);
                 await client.SendTextMessageAsync(chatid, "Введите марку дрона");
                 return;
             }
             if(currentStep == 3)
             {
-                /*    proposal =await proposalRepository.GetCurrentProposal(chatid);
-                    proposal.TypeOfInsurance = message;*/
                 dron.Mark = message;
                 await dronRepository.CreateDron(dron);
                 
@@ -140,14 +123,14 @@ namespace KopterBot.Bot
             if(currentStep == 4)
             {
                 proposal.TypeOfInsurance = message;
-                await proposalRepository.UpdateProposal(proposal);
+                await proposalRepository.Update(proposal);
                 await userRepository.ChangeAction(chatid, "Платная регистрация со страховкой", 5);
                 await client.SendTextMessageAsync(chatid,"Введите адрес");
             }
             if(currentStep == 5)
             {
                 proposal.Adress = message;
-                await proposalRepository.UpdateProposal(proposal);
+                await proposalRepository.Update(proposal);
                 await userRepository.ChangeAction(chatid, "Платная регистрация со страховкой", 6);
                 await client.SendTextMessageAsync(chatid, "Сбросьте вашу геопозицию");
             }
@@ -159,13 +142,12 @@ namespace KopterBot.Bot
                     proposal.latitude = messageObject.Message.Location.Latitude;
                     string realAdres = await GeolocateHandler.GetAddressFromCordinat(proposal.longtitude, proposal.latitude);
                     proposal.RealAdress = realAdres;
-                    await proposalRepository.UpdateProposal(proposal);
+                    await proposalRepository.Update(proposal);
                     await client.SendTextMessageAsync(chatid, "Ожидаем оплату,если все нормально - кидаем клаву с этими кнопками и если все оплатил кидаем в админ-уведомление"
                         , 0, false, false, 0,KeyBoardHandler.Murkup_After_Registration());
                     await CountProposeHandler.ChangeProposeCount();
                     await adminsPush.MessageRequisitionAsync(chatid);
                     // можно считать человека зарегистрированым только после оплаты
-
                 }
             }
 
@@ -182,7 +164,7 @@ namespace KopterBot.Bot
             await userRepository.AuthenticateUser(chatid);
 
             //обязательно переписывать надо
-            if(await HubsHandler.IsChatActive(chatid))
+        /*    if(await HubsHandler.IsChatActive(chatid))
             {
                 long[] arrChatid = await HubsHandler.GetChatId(chatid);
 
@@ -190,7 +172,7 @@ namespace KopterBot.Bot
                 await client.SendTextMessageAsync(chatIdRecive, messageText);
 
                 return;
-            }
+            }*/
             await UserLogs.WriteLog(chatid, messageText);
 
             if (messageText == "/start")
@@ -251,9 +233,9 @@ namespace KopterBot.Bot
                     ,0,false,false,0, KeyBoardHandler.Murkup_Start_Pilot_Mode());
             }
 
-            if (userRepository.IsUserInAction(chatid))
+            if (await userRepository.IsUserInAction(chatid))
             {
-                string action = userRepository.GetCurrentActionName(chatid);
+                string action =await userRepository.GetCurrentActionName(chatid);
                 if(action == "Платная регистрация со страховкой")
                 {
                     await CommandHandler_PaidRegistrationWithInsurance(chatid,messageText,message);
@@ -273,7 +255,6 @@ namespace KopterBot.Bot
                 await client.SendTextMessageAsync(chatid, "Есть несоклько вариантов регистрации",
                     0, false, false, 0, KeyBoardHandler.Murkup_Start_Pilot_UnBuyer_Mode());
             }
-            
         }
     }
 }

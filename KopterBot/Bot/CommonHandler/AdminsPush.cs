@@ -27,7 +27,7 @@ namespace KopterBot.Bot.CommonHandler
                 return;
             List<long> admins =await db.Admins.Select(i => i.ChatId).ToListAsync();
 
-            ProposalDTO proposal =await proposalRepository.GetCurrentProposal(chatid);
+            ProposalDTO proposal =await proposalRepository.FindById(chatid);
 
             int numberOfPurpost = await CountProposeHandler.GetCount();
             UserDTO user = await db.Users.FirstOrDefaultAsync(i => i.ChatId == proposal.ChatId);
