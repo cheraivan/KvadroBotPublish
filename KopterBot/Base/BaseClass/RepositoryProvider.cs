@@ -7,6 +7,7 @@
         private HubRepository _hubRepository;
         private AdminRepository _adminRepository;
         private ProposalRepository _proposalRepository;
+        private StorageRepository _storageRepository;
 
         protected UserRepository userRepository
         {
@@ -51,6 +52,16 @@
                 if (_proposalRepository == null)
                     _proposalRepository = new ProposalRepository();
                 return _proposalRepository;
+            }
+        }
+
+        protected StorageRepository storageRepository
+        {
+            get
+            {
+                if (_storageRepository == null)
+                    _storageRepository = new StorageRepository();
+                return _storageRepository;
             }
         }
 

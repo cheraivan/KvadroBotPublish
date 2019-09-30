@@ -9,7 +9,7 @@ namespace KopterBot.DTO
     class ProposalDTO
     {
         [Key]
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         [ForeignKey("UserDTO")]
         public long ChatId { get; set; }

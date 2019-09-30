@@ -23,7 +23,7 @@ namespace KopterBot.Bot
             client.StartReceiving();
 
             var scope = new ServiceCollection().AddScoped<IMessageHandler, MessageHandler>(x => new MessageHandler(client))
-                .AddScoped<ICallbackHandler,CallBackHandler>(i=>new CallBackHandler(client,context)).BuildServiceProvider();
+                .AddScoped<ICallbackHandler,CallBackHandler>(i=>new CallBackHandler(client)).BuildServiceProvider();
 
             client.OnCallbackQuery += async (object sender, CallbackQueryEventArgs args) =>
             {

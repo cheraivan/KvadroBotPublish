@@ -11,27 +11,27 @@ using Telegram.Bot;
 
 namespace KopterBot.Bot.CommonHandler
 {
-    class AdminsPush:BaseProvider<AdminsPush>
+    class AdminsPush:RepositoryProvider
     {
-        ProposalRepository proposalRepository;
         TelegramBotClient client;
         public AdminsPush(TelegramBotClient client)
         {
             this.client = client;
-            proposalRepository = new ProposalRepository();
         }
 
         public async Task MessageRequisitionAsync(long chatid)
         {
-            int countAdmin = await db.Admins.CountAsync();
+            int countAdmin = await adminRepository.CountAdmins();
             if (countAdmin == 0)
                 return;
-            List<long> admins =await db.Admins.Select(i => i.ChatId).ToListAsync();
+            List<long> admins = await adminRepository.GetChatId();
 
             ProposalDTO proposal =await proposalRepository.FindById(chatid);
 
             int numberOfPurpost = await CountProposeHandler.GetCount();
-            UserDTO user = await db.Users.FirstOrDefaultAsync(i => i.ChatId == proposal.ChatId);
+            IEnumerable<UserDTO> users = await userRepository.Get(i => i.ChatId == proposal.ChatId);
+
+            UserDTO user = users.ToList()[0];
 
             if (user == null)
                 throw new Exception("user is null");
@@ -46,13 +46,12 @@ namespace KopterBot.Bot.CommonHandler
 
             StorageDTO storage = new StorageDTO();
             storage.Message = message;
-            await db.Storage.AddAsync(storage);
-            await db.SaveChangesAsync();
 
-             foreach(long _chatid in admins)
-             {
-                await client.SendTextMessageAsync(_chatid, message);
-             }
+            await storageRepository.Create(storage);
+            foreach(long _chatid in admins)
+            {
+               await client.SendTextMessageAsync(_chatid, message);
+            }
         }
     }
 }

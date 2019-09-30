@@ -4,6 +4,7 @@ using KopterBot.DTO;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Telegram.Bot;
@@ -17,6 +18,11 @@ namespace KopterBot.Repository
 
         #region Public_Methods
 
+        public async ValueTask<int> CountAdmins() =>
+            await db.Admins.CountAsync();
+
+        public async ValueTask<List<long>> GetChatId() =>
+            await db.Admins.Select(i => i.ChatId).ToListAsync();
         public async ValueTask<bool> IsAdmin(long chatid)
         {
             AdminDTO admin = await FindById(chatid);

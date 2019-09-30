@@ -22,11 +22,6 @@ namespace KopterBot.Repository
             user.proposals = new List<ProposalDTO>();
             await base.Create(user);
         }
-
-        public new async ValueTask<UserDTO> FindById(long chatid)
-        {
-            return await db.Users.AsNoTracking().FirstOrDefaultAsync(i => i.ChatId == chatid);
-        }
       
         #endregion
 

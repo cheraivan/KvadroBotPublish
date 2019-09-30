@@ -13,18 +13,19 @@ using Telegram.Bot.Types;
 
 namespace KopterBot.Bot
 {
-    class CallBackHandler:BaseHandler,ICallbackHandler
+    class CallBackHandler:RepositoryProvider,ICallbackHandler
     {
-        HubRepository hubRepository;
-        public CallBackHandler(TelegramBotClient client,ApplicationContext context):base(client,context)
+        TelegramBotClient client;
+        public CallBackHandler(TelegramBotClient client)
         {
-            hubRepository = new HubRepository();
+            this.client = client;
         }
 
         #region PrivateHandlers
         private async Task CallBackHandler_Confirm(long chatid)
         {
-            HubDTO hub = await db.Hubs.Where(i=>i.ChatIdReceiver == chatid).FirstOrDefaultAsync();
+            IEnumerable<HubDTO> hubs = await hubRepository.Get(i => i.ChatIdReceiver == chatid);
+            HubDTO hub = hubs.ToList()[0];
             await hubRepository.ConfirmDialog("Начать", hub.ChatIdCreater, chatid);
         }
         #endregion
@@ -35,7 +36,8 @@ namespace KopterBot.Bot
             if (callback.CallbackQuery.Data == "confirm")
             {
                 await CallBackHandler_Confirm(chatid);
-                HubDTO hub = await db.Hubs.Where(i => i.ChatIdReceiver == chatid).FirstOrDefaultAsync();
+                IEnumerable<HubDTO> hubs = await hubRepository.Get(i => i.ChatIdReceiver == chatid);
+                HubDTO hub = hubs.ToList()[0];
                 long chatIdCreater = hub.ChatIdCreater;
                 await client.SendTextMessageAsync(chatIdCreater, "Подключение установлено");
                 await client.SendTextMessageAsync(chatid, "Подключение установлено");

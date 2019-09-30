@@ -26,9 +26,8 @@ namespace KopterBot.Bot
     {
         long chatid;
         TelegramBotClient client;
-        #region repository
+
         AdminsPush adminsPush;
-        #endregion
         public MessageHandler(TelegramBotClient client)
         {
             this.client = client;
