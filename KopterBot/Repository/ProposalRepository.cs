@@ -18,13 +18,23 @@ namespace KopterBot.Repository
         }
         public async Task Create(long chatid)
         {
-            UserDTO user = await db.Users.FirstOrDefaultAsync(i => i.ChatId == chatid);
-
-            ProposalDTO porposal = new ProposalDTO()
+            UserDTO user = await db.Users.AsNoTracking().FirstOrDefaultAsync(i => i.ChatId == chatid);
+            if (user == null)
+                throw new NullReferenceException("User cannot be null");
+            ProposalDTO porposal = await db.proposalsDTO.AsNoTracking().FirstOrDefaultAsync(i => i.ChatId == chatid);
+            if (porposal != null)
+                return;
+            porposal = new ProposalDTO()
             {
                 ChatId = chatid
             };
             await Create(porposal);
+        }
+
+        public async override ValueTask<ProposalDTO> FindById(long id)
+        {
+            return await db.proposalsDTO
+                .FirstOrDefaultAsync(i => i.ChatId == id);
         }
 
         public async Task DeleteNotFillProposalAsync(long chatid)

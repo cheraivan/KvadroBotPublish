@@ -8,6 +8,17 @@
         private AdminRepository _adminRepository;
         private ProposalRepository _proposalRepository;
         private StorageRepository _storageRepository;
+        private CountProposeRepository _countProposeRepository;
+
+        protected CountProposeRepository countProposeRepository
+        {
+            get
+            {
+                if (_countProposeRepository == null)
+                    _countProposeRepository = new CountProposeRepository();
+                return _countProposeRepository;
+            }
+        }
 
         protected UserRepository userRepository
         {

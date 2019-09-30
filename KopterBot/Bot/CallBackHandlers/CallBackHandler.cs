@@ -24,8 +24,7 @@ namespace KopterBot.Bot
         #region PrivateHandlers
         private async Task CallBackHandler_Confirm(long chatid)
         {
-            IEnumerable<HubDTO> hubs = await hubRepository.Get(i => i.ChatIdReceiver == chatid);
-            HubDTO hub = hubs.ToList()[0];
+            HubDTO hub = await hubRepository.FirstElement(i => i.ChatIdReceiver == chatid);
             await hubRepository.ConfirmDialog("Начать", hub.ChatIdCreater, chatid);
         }
         #endregion
@@ -36,8 +35,8 @@ namespace KopterBot.Bot
             if (callback.CallbackQuery.Data == "confirm")
             {
                 await CallBackHandler_Confirm(chatid);
-                IEnumerable<HubDTO> hubs = await hubRepository.Get(i => i.ChatIdReceiver == chatid);
-                HubDTO hub = hubs.ToList()[0];
+                HubDTO hub = await hubRepository.FirstElement(i => i.ChatIdReceiver == chatid);
+               
                 long chatIdCreater = hub.ChatIdCreater;
                 await client.SendTextMessageAsync(chatIdCreater, "Подключение установлено");
                 await client.SendTextMessageAsync(chatid, "Подключение установлено");

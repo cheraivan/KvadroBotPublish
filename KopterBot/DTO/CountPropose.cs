@@ -1,4 +1,5 @@
-﻿using KopterBot.Bot;
+﻿using KopterBot.Base;
+using KopterBot.Bot;
 using KopterBot.Repository;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -17,34 +18,27 @@ namespace KopterBot.DTO
         public int Id { get; set; }
         public int Count { get; set; }
     }
-    class CountProposeHandler
+    class CountProposeHandler:RepositoryProvider
     {
-        private static ApplicationContext db;
-        static CountProposeHandler()
+        public async ValueTask<int> GetCount()
         {
-            db = new ApplicationContext();
+           IEnumerable<CountPropose> c = await countProposeRepository.Get();
+           return c.ToList()[0].Count;
         }
 
-        public async static ValueTask<int> GetCount()
+        public async Task ChangeProposeCount()
         {
-            CountPropose c = await db.CountPurpose.FirstOrDefaultAsync();
-            return c.Count;
-        }
-
-        public async static Task ChangeProposeCount()
-        {
-            int countFields = await db.CountPurpose.CountAsync();
+            int countFields = await countProposeRepository.CountAsync();
             if(countFields == 0)
             {
                 CountPropose c = new CountPropose();
                 c.Count = 1;
-                db.CountPurpose.Add(c);
-                await db.SaveChangesAsync();
+                await countProposeRepository.Create(c);
             }
-            CountPropose countPropose = await db.CountPurpose.FirstOrDefaultAsync();
+            IEnumerable<CountPropose> entity = await countProposeRepository.Get();
+            CountPropose countPropose = entity.ToList()[0];
             countPropose.Count = countPropose.Count + 1;
-            db.Entry(countPropose).State = EntityState.Modified;
-            await db.SaveChangesAsync();
+            await countProposeRepository.Update(countPropose);
         }
     }
 }

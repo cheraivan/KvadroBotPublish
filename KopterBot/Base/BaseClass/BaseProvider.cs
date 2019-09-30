@@ -48,6 +48,16 @@ namespace KopterBot.Base
         {
             throw new NotImplementedException("method has to be override");
         }
+
+        public virtual ValueTask<T> FirstElement(Func<T, bool> predicate)
+        {
+            throw new NotImplementedException("method has to be override");
+        }
+
+        public virtual ValueTask<T> LastElement(Func<T, bool> predicate)
+        {
+            throw new NotImplementedException("method has to be override");
+        }
     }
 }
 

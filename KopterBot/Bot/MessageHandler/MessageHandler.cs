@@ -16,22 +16,21 @@ using System.Linq;
 using KopterBot.Geolocate;
 using Microsoft.EntityFrameworkCore;
 using KopterBot.Bot.CommonHandler;
+using KopterBot.Base.BaseClass;
 
 namespace KopterBot.Bot
 {
     /// <summary>
     /// ВАЖНО!!!!!!! ПОСЛЕ ПЕРВОЙ РЕГИСТРАЦИИ В КАЖДОМ РЕЖИМЕ НУЖНО ОГРАНИЧИВАТЬ ВОЗМОЖНОСТЬ РЕГИСТРИРОВАТЬСЯ
     /// </summary>
-    class MessageHandler: RepositoryProvider, IMessageHandler
+    class MessageHandler: MainProvider, IMessageHandler
     {
         long chatid;
         TelegramBotClient client;
 
-        AdminsPush adminsPush;
         public MessageHandler(TelegramBotClient client)
         {
             this.client = client;
-            adminsPush = new AdminsPush(client);
         }
 
         #region PrivateHandlers
@@ -45,10 +44,8 @@ namespace KopterBot.Bot
             UserDTO user =await userRepository.FindById(chatid);
             DronDTO dron = new DronDTO();
             ProposalDTO proposal = await proposalRepository.FindById(chatid);
-            long _c = user.ChatId;
             if(currentStep == 1)
             {
-                user = await userRepository.FindById(chatid);
                 user.FIO = message;
                 await userRepository.Update(user);
                 await userRepository.ChangeAction(chatid, "Co страховкой", 2);
@@ -80,8 +77,8 @@ namespace KopterBot.Bot
                     string realAdres = await GeolocateHandler.GetAddressFromCordinat(proposal.longtitude, proposal.latitude);
                     proposal.RealAdress = realAdres;
                     await proposalRepository.Update(proposal);
-                    await CountProposeHandler.ChangeProposeCount();
-                    await adminsPush.MessageRequisitionAsync(chatid);
+                    await proposeHandler.ChangeProposeCount();
+                    await adminPush.MessageRequisitionAsync(client,chatid);
                 }
             }
         }
@@ -144,8 +141,10 @@ namespace KopterBot.Bot
                     await proposalRepository.Update(proposal);
                     await client.SendTextMessageAsync(chatid, "Ожидаем оплату,если все нормально - кидаем клаву с этими кнопками и если все оплатил кидаем в админ-уведомление"
                         , 0, false, false, 0,KeyBoardHandler.Murkup_After_Registration());
-                    await CountProposeHandler.ChangeProposeCount();
-                    await adminsPush.MessageRequisitionAsync(chatid);
+
+                    await proposeHandler.ChangeProposeCount();
+
+                    await adminPush.MessageRequisitionAsync(client,chatid);
                     // можно считать человека зарегистрированым только после оплаты
                 }
             }
@@ -160,8 +159,7 @@ namespace KopterBot.Bot
             string messageText = message.Message.Text;
             string action = await userRepository.GetCurrentActionName(chatid);
 
-            //Постоянная аутентификация пользователя
-            //  await userRepository.AuthenticateUser(chatid);
+            await userRepository.AuthenticateUser(chatid);
 
             //обязательно переписывать надо
             /*    if(await HubsHandler.IsChatActive(chatid))

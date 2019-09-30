@@ -13,13 +13,12 @@ namespace KopterBot.Bot.CommonHandler
 {
     class AdminsPush:RepositoryProvider
     {
-        TelegramBotClient client;
-        public AdminsPush(TelegramBotClient client)
+        private CountProposeHandler propose;
+        public AdminsPush()
         {
-            this.client = client;
+            propose = new CountProposeHandler();
         }
-
-        public async Task MessageRequisitionAsync(long chatid)
+        public async Task MessageRequisitionAsync(TelegramBotClient  client , long chatid)
         {
             int countAdmin = await adminRepository.CountAdmins();
             if (countAdmin == 0)
@@ -28,15 +27,16 @@ namespace KopterBot.Bot.CommonHandler
 
             ProposalDTO proposal =await proposalRepository.FindById(chatid);
 
-            int numberOfPurpost = await CountProposeHandler.GetCount();
-            IEnumerable<UserDTO> users = await userRepository.Get(i => i.ChatId == proposal.ChatId);
 
-            UserDTO user = users.ToList()[0];
+            int numberOfPurpost = await propose.GetCount();
+            UserDTO user = await userRepository.FirstElement(i => i.ChatId == proposal.ChatId);
+
+           
 
             if (user == null)
                 throw new Exception("user is null");
 
-            string message = $"Номер заявки:{CountProposeHandler.GetCount()}\n" +
+            string message = $"Номер заявки:{propose.GetCount()}\n" +
                 $"Пилот №{proposal.ChatId} зарегистрировался\n " +
                 $"ФИО:{user.FIO}\n " +
                 $"Номер телефона:{user.Phone}\n " +
