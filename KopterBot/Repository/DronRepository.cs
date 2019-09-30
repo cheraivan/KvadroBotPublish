@@ -1,4 +1,5 @@
-﻿using KopterBot.DTO;
+﻿using KopterBot.Base.BaseClass;
+using KopterBot.DTO;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -8,21 +9,16 @@ using System.Threading.Tasks;
 
 namespace KopterBot.Repository
 {
-    class DronRepository:BaseRepository
+    class DronRepository: BaseProviderImpementation<DronDTO>
     {
-        GenericRepository<DronDTO> drons;
-        public DronRepository()
-        {
-            drons = new GenericRepository<DronDTO>(db);
-        }
 
         public async Task CreateDron(DronDTO dto)
         {
-            DronDTO dron = await db.Drons.Where(dr => dto.Mark == dr.Mark)
-                .FirstOrDefaultAsync();
-            if (dron == null)
+            IEnumerable<DronDTO> drons = await Get(dr => dto.Mark == dr.Mark);
+            drons = drons.Take(1);
+            if (drons == null)
             { 
-                await drons.Create(dto);
+                await Create(dto);
             }
             return;
         }

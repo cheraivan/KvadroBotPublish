@@ -174,7 +174,7 @@ namespace KopterBot.Bot
 
                     return;
                 }*/
-            await UserLogs.WriteLog(chatid, messageText);
+        //    await UserLogs.WriteLog(chatid, messageText);
 
             if (messageText == "/start")
             {
@@ -201,7 +201,7 @@ namespace KopterBot.Bot
             // меняем пользователя на админа
             if (messageText == "/op")
             {
-
+                
             }
             /*
              *Меняем действие на NULL, обнуляем вводимые данные пользователя 

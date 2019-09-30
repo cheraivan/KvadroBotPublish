@@ -1,4 +1,5 @@
-﻿using KopterBot.Bot;
+﻿using KopterBot.Base.BaseClass;
+using KopterBot.Bot;
 using KopterBot.DTO;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -9,7 +10,7 @@ using Telegram.Bot;
 
 namespace KopterBot.Repository
 {
-    class AdminRepository:BaseRepository
+    class AdminRepository: BaseProviderImpementation<AdminDTO>
     {
         
         public AdminRepository() { }
@@ -18,21 +19,17 @@ namespace KopterBot.Repository
 
         public async ValueTask<bool> IsAdmin(long chatid)
         {
-            AdminDTO admin = await db.Admins.FirstOrDefaultAsync(i => i.ChatId == chatid);
-
-            // протестировать админ-вход
-
+            AdminDTO admin = await FindById(chatid);
             return admin == null ? false
                 : admin.Wish == 1 ? false : true;
         }
 
         public async Task ChangeWish(long chatid)
         {
-            AdminDTO admin = await db.Admins.FirstOrDefaultAsync(i => i.ChatId == chatid);
+            AdminDTO admin = await FindById(chatid);
             int wish = admin.Wish;
             wish = wish == 0 ? 1 : 0;
-            db.Entry(admin).State = EntityState.Modified;
-            await db.SaveChangesAsync();
+            await Update(admin);
         }
         #endregion
     }

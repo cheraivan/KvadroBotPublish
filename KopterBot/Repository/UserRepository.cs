@@ -1,4 +1,5 @@
-﻿using KopterBot.DTO;
+﻿using KopterBot.Base.BaseClass;
+using KopterBot.DTO;
 using KopterBot.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -9,34 +10,24 @@ using System.Threading.Tasks;
 
 namespace KopterBot.Repository
 {
-    class UserRepository:UserDTO,IRepository<UserDTO>
+    class UserRepository:BaseProviderImpementation<UserDTO>
     {
         #region repository_methods
-        public async ValueTask<UserDTO> FindById(long chatid)
-        {
-            return await db.Users.AsNoTracking()
-                .FirstOrDefaultAsync(i => i.ChatId == chatid);
-        }
-        public async Task Create(UserDTO user)
+        public override async Task Create(UserDTO user)
         {
             if (user.ChatId == 0)
                 throw new Exception("chat id cant be null");
             user.step = new StepDTO();
             //user.step.ChatId = user.ChatId;
             user.proposals = new List<ProposalDTO>();
-            await db.Users.AddAsync(user);
-            await db.SaveChangesAsync();
+            await base.Create(user);
         }
-        public async Task Update(UserDTO user)
+
+        public new async ValueTask<UserDTO> FindById(long chatid)
         {
-            db.Entry(user).State = EntityState.Modified;
-            await db.SaveChangesAsync(); 
+            return await db.Users.AsNoTracking().FirstOrDefaultAsync(i => i.ChatId == chatid);
         }
-        public async Task Delete(UserDTO user)
-        {
-            db.Users.Remove(user);
-            await db.SaveChangesAsync();
-        }
+      
         #endregion
 
         public async Task AuthenticateUser(long chatid)

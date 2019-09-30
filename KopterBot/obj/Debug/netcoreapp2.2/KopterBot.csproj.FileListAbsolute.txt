@@ -20,3 +20,14 @@ D:\Repositories\KvadroBot\KopterBot\obj\Debug\netcoreapp2.2\KopterBot.AssemblyIn
 D:\Repositories\KvadroBot\KopterBot\obj\Debug\netcoreapp2.2\KopterBot.AssemblyInfo.cs
 D:\Repositories\KvadroBot\KopterBot\obj\Debug\netcoreapp2.2\KopterBot.dll
 D:\Repositories\KvadroBot\KopterBot\obj\Debug\netcoreapp2.2\KopterBot.pdb
+D:\Bot\KvadroBotPublish\KopterBot\obj\Debug\netcoreapp2.2\KopterBot.csprojAssemblyReference.cache
+D:\Bot\KvadroBotPublish\KopterBot\obj\Debug\netcoreapp2.2\KopterBot.csproj.CoreCompileInputs.cache
+D:\Bot\KvadroBotPublish\KopterBot\obj\Debug\netcoreapp2.2\KopterBot.AssemblyInfoInputs.cache
+D:\Bot\KvadroBotPublish\KopterBot\obj\Debug\netcoreapp2.2\KopterBot.AssemblyInfo.cs
+D:\Bot\KvadroBotPublish\KopterBot\obj\Debug\netcoreapp2.2\KopterBot.dll
+D:\Bot\KvadroBotPublish\KopterBot\obj\Debug\netcoreapp2.2\KopterBot.pdb
+D:\Bot\KvadroBotPublish\KopterBot\bin\Debug\netcoreapp2.2\KopterBot.deps.json
+D:\Bot\KvadroBotPublish\KopterBot\bin\Debug\netcoreapp2.2\KopterBot.runtimeconfig.json
+D:\Bot\KvadroBotPublish\KopterBot\bin\Debug\netcoreapp2.2\KopterBot.runtimeconfig.dev.json
+D:\Bot\KvadroBotPublish\KopterBot\bin\Debug\netcoreapp2.2\KopterBot.dll
+D:\Bot\KvadroBotPublish\KopterBot\bin\Debug\netcoreapp2.2\KopterBot.pdb

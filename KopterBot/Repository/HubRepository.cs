@@ -1,4 +1,5 @@
-﻿using KopterBot.DTO;
+﻿using KopterBot.Base.BaseClass;
+using KopterBot.DTO;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -7,15 +8,9 @@ using System.Threading.Tasks;
 
 namespace KopterBot.Repository
 {
-    class HubRepository:BaseRepository
+    class HubRepository: BaseProviderImpementation<HubDTO>
     {
         
-        private static GenericRepository<HubDTO> genericRepository;
-        public HubRepository()
-        {
-            genericRepository = new GenericRepository<HubDTO>(db);
-        }
-
         static HubRepository()
         {
 
@@ -26,15 +21,13 @@ namespace KopterBot.Repository
             if (confirm == "Начать")
             {
                 HubDTO reletedHub = new HubDTO(ReceiverChatId, CreaterChatId);
-                await db.Hubs.AddAsync(reletedHub);
-                await db.SaveChangesAsync();
+                await Create(reletedHub);
                 return;
             }
             else
             {
                 HubDTO hub = await db.Hubs.FindAsync(CreaterChatId);
-                db.Hubs.Remove(hub);
-                await db.SaveChangesAsync();
+                await Delete(hub);
             }
         }
 
@@ -44,13 +37,11 @@ namespace KopterBot.Repository
             if (hub == null)
             {
                 hub = new HubDTO(CreaterChatId, ReceiverChatId);
-                await db.Hubs.AddAsync(hub);
-                await db.SaveChangesAsync();
+                await Create(hub);
                 return;
             }
             hub.ChatIdReceiver = ReceiverChatId;
-            db.Entry(hub).State = EntityState.Modified;
-            await db.SaveChangesAsync();
+            await Update(hub);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using KopterBot.DTO;
+﻿using KopterBot.Base.BaseClass;
+using KopterBot.DTO;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace KopterBot.Repository
 {
-    class ProposalRepository:BaseRepository
+    class ProposalRepository:BaseProviderImpementation<ProposalDTO>
     {
         public async ValueTask<int> GetCurrentNumberProposalAsync(long chatid)
         {
@@ -23,20 +24,7 @@ namespace KopterBot.Repository
             {
                 ChatId = chatid
             };
-            user.proposals.Add(porposal);
-
-            await db.SaveChangesAsync();
-        }
-
-        public async ValueTask<ProposalDTO> FindById(long chatid)
-        {
-            return await db.proposalsDTO.AsNoTracking().LastOrDefaultAsync(i => i.ChatId == chatid);
-        }
-
-        public async Task Update(ProposalDTO item)
-        {
-            db.Entry(item).State = EntityState.Modified;
-            await db.SaveChangesAsync();
+            await Create(porposal);
         }
 
         public async Task DeleteNotFillProposalAsync(long chatid)

@@ -1,4 +1,5 @@
-﻿using KopterBot.DTO;
+﻿using KopterBot.Base;
+using KopterBot.DTO;
 using KopterBot.Repository;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -10,7 +11,7 @@ using Telegram.Bot;
 
 namespace KopterBot.Bot.CommonHandler
 {
-    class AdminsPush:BaseRepository
+    class AdminsPush:BaseProvider<AdminsPush>
     {
         ProposalRepository proposalRepository;
         TelegramBotClient client;
