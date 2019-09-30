@@ -9,6 +9,17 @@
         private ProposalRepository _proposalRepository;
         private StorageRepository _storageRepository;
         private CountProposeRepository _countProposeRepository;
+        private ManagerRepository _managerRepository;
+
+        protected ManagerRepository managerRepository
+        {
+            get
+            {
+                if (_managerRepository == null)
+                    _managerRepository = new ManagerRepository();
+                return _managerRepository;
+            }
+        }
 
         protected CountProposeRepository countProposeRepository
         {

@@ -13,6 +13,16 @@ namespace KopterBot.Base.BaseClass
         private AdminsPush _adminPush;
         private HubsHandler _hubsHandler;
         private CountProposeHandler _proposeHandler;
+        private ManagerPush _managerPush;
+        protected ManagerPush managerPush
+        {
+            get
+            {
+                if (_managerPush == null)
+                    _managerPush = new ManagerPush();
+                return _managerPush;
+            }
+        }
         protected HubsHandler hubsHandler
         {
             get

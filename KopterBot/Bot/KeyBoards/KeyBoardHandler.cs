@@ -59,6 +59,24 @@ namespace KopterBot.Bot
             };
             return keyboard;
         }
+        public static IReplyMarkup  Murkup_Start_Buisness_Mode()
+        {
+            return new ReplyKeyboardMarkup
+            {
+                Keyboard = new[]
+                {
+                    new[]
+                    {
+                        new KeyboardButton("Частный клиент")
+                    },
+                    new[]
+                    {
+                        new KeyboardButton("Корпоративный")
+                    }
+                },
+                ResizeKeyboard = true
+            };
+        }
         public static IReplyMarkup Murkup_Start_Pilot_UnBuyer_Mode()
         {
             return new ReplyKeyboardMarkup
