@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace KopterBot.DTO
 {
-    class UserDTO:IBaseEntity
+    class UserDTO
     {
         private bool disposed = false;
 
