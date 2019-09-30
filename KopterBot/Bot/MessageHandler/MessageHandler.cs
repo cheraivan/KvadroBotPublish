@@ -42,8 +42,8 @@ namespace KopterBot.Bot
         }
         private async Task CommandHandler_PaidRegistrationWithoutInsurance(long chatid,string message,MessageEventArgs messageObject)
         {
-            int currentStep =await userRepository.GetCurrentActionStep(chatid);
-            UserDTO user = await db.Users.AsNoTracking().FirstOrDefaultAsync(i => i.ChatId == chatid);
+            int currentStep = await userRepository.GetCurrentActionStep(chatid);
+            UserDTO user =await userRepository.FindById(chatid);
             DronDTO dron = new DronDTO();
             ProposalDTO proposal = await proposalRepository.FindById(chatid);
             long _c = user.ChatId;
@@ -159,20 +159,21 @@ namespace KopterBot.Bot
             Console.WriteLine($"Сообщение прислал : {chatid}\nТекст:{message.Message.Text}\n");
             chatid = message.Message.Chat.Id;
             string messageText = message.Message.Text;
+            string action = await userRepository.GetCurrentActionName(chatid);
 
             //Постоянная аутентификация пользователя
-            await userRepository.AuthenticateUser(chatid);
+            //  await userRepository.AuthenticateUser(chatid);
 
             //обязательно переписывать надо
-        /*    if(await HubsHandler.IsChatActive(chatid))
-            {
-                long[] arrChatid = await HubsHandler.GetChatId(chatid);
+            /*    if(await HubsHandler.IsChatActive(chatid))
+                {
+                    long[] arrChatid = await HubsHandler.GetChatId(chatid);
 
-                long chatIdRecive = arrChatid[0] == chatid ? arrChatid[1] : arrChatid[0];
-                await client.SendTextMessageAsync(chatIdRecive, messageText);
+                    long chatIdRecive = arrChatid[0] == chatid ? arrChatid[1] : arrChatid[0];
+                    await client.SendTextMessageAsync(chatIdRecive, messageText);
 
-                return;
-            }*/
+                    return;
+                }*/
             await UserLogs.WriteLog(chatid, messageText);
 
             if (messageText == "/start")
@@ -233,9 +234,8 @@ namespace KopterBot.Bot
                     ,0,false,false,0, KeyBoardHandler.Murkup_Start_Pilot_Mode());
             }
 
-            if (await userRepository.IsUserInAction(chatid))
+            if (action!=null)
             {
-                string action =await userRepository.GetCurrentActionName(chatid);
                 if(action == "Платная регистрация со страховкой")
                 {
                     await CommandHandler_PaidRegistrationWithInsurance(chatid,messageText,message);

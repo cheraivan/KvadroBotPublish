@@ -26,7 +26,6 @@ namespace KopterBot.Repository
         protected AdminRepository adminRepository;
         protected ProposalRepository proposalRepository;
 
-
         public RepositoryProvider()
         {
             userRepository = new UserRepository();

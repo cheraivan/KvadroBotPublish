@@ -17,7 +17,6 @@ namespace KopterBot.DTO
         public string TypeOfInsurance { get; set; }
 
         public string Adress { get; set; }
-
         public string RealAdress { get; set; }
 
         public float?  longtitude{ get; set; }
