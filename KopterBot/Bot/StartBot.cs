@@ -22,6 +22,7 @@ namespace KopterBot.Bot
             client = new TelegramBotClient(Constant.Token);
             client.StartReceiving();
 
+            List<string> commandList = CommandList.GetCommands();
             var scope = new ServiceCollection().AddScoped<IMessageHandler, MessageHandler>(x => new MessageHandler(client))
                 .AddScoped<ICallbackHandler,CallBackHandler>(i=>new CallBackHandler(client)).BuildServiceProvider();
 

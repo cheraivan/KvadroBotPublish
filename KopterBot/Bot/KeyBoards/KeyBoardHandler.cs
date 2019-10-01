@@ -7,6 +7,24 @@ namespace KopterBot.Bot
 {
     class KeyBoardHandler
     {
+        public static IReplyMarkup PilotWithoutSubscribe_Murkup()
+        {
+            return new ReplyKeyboardMarkup
+            {
+                Keyboard = new[]
+                {
+                    new[]
+                    {
+                        new KeyboardButton("Партнеры")
+                    },
+                    new[]
+                    {
+                    new KeyboardButton("Просмотр заказов")
+                    }
+                },
+                ResizeKeyboard = true
+            };
+        }
         public static IReplyMarkup Markup_Back_From_First_Action()
         {
             return new ReplyKeyboardMarkup
@@ -21,7 +39,7 @@ namespace KopterBot.Bot
                 ResizeKeyboard = true
             };
         }
-        public static IReplyMarkup Markup_Start()
+        public static IReplyMarkup Murkup_Start_AfterChange()
         {
             IReplyMarkup keyboard = new ReplyKeyboardMarkup
             {
@@ -40,6 +58,24 @@ namespace KopterBot.Bot
             };
             return keyboard;
         }
+        public static IReplyMarkup Murkup_BuisnessmanMenu()
+        {
+            return new ReplyKeyboardMarkup
+            {
+                Keyboard = new[]
+                {
+                    new[]
+                    {
+                        new KeyboardButton("Просмотреть свои заказы")
+                    },
+                    new[]
+                    {
+                        new KeyboardButton("Создать новую задачу")
+                    }
+                },
+                ResizeKeyboard = true
+            };
+        }
         public static IReplyMarkup Markup_Start_Pilot_Payment_Mode()
         {
             IReplyMarkup keyboard = new ReplyKeyboardMarkup
@@ -53,6 +89,10 @@ namespace KopterBot.Bot
                     new[]
                     {
                         new KeyboardButton("Платная регистрация без страховки")
+                    },
+                    new[]
+                    {
+                        new KeyboardButton("Назад")
                     }
                 },
                 ResizeKeyboard = true
@@ -72,6 +112,10 @@ namespace KopterBot.Bot
                     new[]
                     {
                         new KeyboardButton("Корпоративный")
+                    },
+                    new[]
+                    {
+                        new KeyboardButton("Назад")
                     }
                 },
                 ResizeKeyboard = true
@@ -90,6 +134,10 @@ namespace KopterBot.Bot
                     new[]
                     {
                         new KeyboardButton("Без страховки")
+                    },
+                    new[]
+                    {
+                        new KeyboardButton("Назад")
                     }
                 },
                 ResizeKeyboard = true
@@ -108,13 +156,17 @@ namespace KopterBot.Bot
                     new[]
                     {
                         new KeyboardButton("Частичные возможности бесплатно")
+                    },
+                    new[]
+                    {
+                        new KeyboardButton("Назад")
                     }
                 },
                 ResizeKeyboard = true
             };
 
         }
-        public static IReplyMarkup Murkup_After_Registration()
+        public static IReplyMarkup PilotWithSubscribe_Murkup()
         {
             return new ReplyKeyboardMarkup
             {
@@ -142,7 +194,7 @@ namespace KopterBot.Bot
                 ResizeKeyboard = true
             };
         }
-        public static IReplyMarkup Start_For_Buisnessmen()
+        public static IReplyMarkup AuthOrRegistration()
         {
             return new ReplyKeyboardMarkup
             {
@@ -150,15 +202,37 @@ namespace KopterBot.Bot
                 {
                     new[]
                     {
-                        new KeyboardButton("Частный клиент")
+                        new KeyboardButton("Авторизация")
                     },
                     new[]
                     {
-                        new KeyboardButton("Корпоративный клиент")
+                        new KeyboardButton("Регистрация")
                     }
-                },
-                ResizeKeyboard = true
+                }
             };
+        }
+        public static IReplyMarkup ChangeKeyBoardPilot(int privilagie)
+        {
+            if (privilagie == 1)
+                return PilotWithoutSubscribe_Murkup();
+            if (privilagie == 2)
+                return PilotWithSubscribe_Murkup();
+            throw new Exception("incorrect value");
+        }
+        public IReplyMarkup ChatConfirm()
+        {
+            var keyboard = new InlineKeyboardMarkup(new InlineKeyboardButton[][]
+               {
+                    new[]
+                    {
+                        new InlineKeyboardButton(){Text="Подтвердить",CallbackData="confirm"}
+                    },
+                    new[]
+                    {
+                        new InlineKeyboardButton(){Text="Отмена",CallbackData="cancel"}
+                    }
+               });
+            return keyboard;
         }
     }
 }

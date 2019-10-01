@@ -18,6 +18,9 @@ namespace KopterBot.DTO
         public string Login { get; set; }
         public string FIO { get; set; }
         public string Phone { get; set; }
+        public int IsRegister { get; set; }
+        public int PilotPrivilag { get; set; } // показываем привилегию пилота 
+        public int BuisnesPrivilag { get; set; } //привилегия заказчика
         public StepDTO step { get; set; }
         public ICollection<ProposalDTO> proposals { get; set; }
         public UserDTO()

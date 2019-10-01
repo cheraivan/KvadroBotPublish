@@ -45,7 +45,7 @@ namespace KopterBot.Bot
             {
                 user.FIO = message;
                 await userRepository.Update(user);
-                await userRepository.ChangeAction(chatid, "Корпоративная бизнесс-регистрация", 2);
+                await userRepository.ChangeAction(chatid, "Корпоративная бизнесс-регистрация", ++currentStep);
                 await client.SendTextMessageAsync(chatid, "Введите номер телефона");
                 return;
             }
@@ -53,6 +53,7 @@ namespace KopterBot.Bot
             if(currentStep == 2)
             {
                 user.Phone = message;
+                user.BuisnesPrivilag = 1;
                 await userRepository.Update(user);
                 await client.SendTextMessageAsync(chatid, "Вы успешно зарегистрировались");
                 await managerPush.SendMessage(client, chatid);
@@ -62,20 +63,20 @@ namespace KopterBot.Bot
         #endregion
         private async Task CommandHandler_Start(long chatid)
         {
-            await client.SendTextMessageAsync(chatid, "Вводный текст в бота,тут чет придумаем", 0, false, false, 0,KeyBoardHandler.Markup_Start());
+            await client.SendTextMessageAsync(chatid, "Вводный текст в бота,тут чет придумаем", 0, false, false, 0,KeyBoardHandler.Murkup_Start_AfterChange());
         }
         #region PaymantRegistration
-        private async Task CommandHandler_PaidRegistrationWithoutInsurance(long chatid,string message,MessageEventArgs messageObject)
+        private async Task CommandHandler_PaidRegistrationWithoutInsurance(UserDTO user,string message,MessageEventArgs messageObject)
         {
+            long chatid = user.ChatId;
             int currentStep = await userRepository.GetCurrentActionStep(chatid);
-            UserDTO user =await userRepository.FindById(chatid);
             DronDTO dron = new DronDTO();
             ProposalDTO proposal = await proposalRepository.FindById(chatid);
             if(currentStep == 1)
             {
                 user.FIO = message;
                 await userRepository.Update(user);
-                await userRepository.ChangeAction(chatid, "Платная регистрация без страховки", 2);
+                await userRepository.ChangeAction(chatid, "Платная регистрация без страховки",++currentStep);
                 await client.SendTextMessageAsync(chatid, "Введите мобильный телефон");
                 return;
             }
@@ -83,7 +84,7 @@ namespace KopterBot.Bot
             {
                 user.Phone = message;
                 await userRepository.Update(user);
-                await userRepository.ChangeAction(chatid, "Платная регистрация без страховки", 3);
+                await userRepository.ChangeAction(chatid, "Платная регистрация без страховки", ++currentStep);
                 await client.SendTextMessageAsync(chatid, "Введите марку дрона");
                 return;
             }
@@ -91,16 +92,18 @@ namespace KopterBot.Bot
             {
                 dron.Mark = message;
                 await dronRepository.Create(dron);
-                await userRepository.ChangeAction(chatid, "Платная регистрация без страховки", 4);
+                await userRepository.ChangeAction(chatid, "Платная регистрация без страховки", ++currentStep);
                 await client.SendTextMessageAsync(chatid, "Введите адрес");
+                return;
             }
             if(currentStep == 4)
             {
                 await proposalRepository.Create(user);
                 proposal.Adress = message;
                 await proposalRepository.Update(proposal);
-                await userRepository.ChangeAction(chatid, "Платная регистрация без страховки", 5);
+                await userRepository.ChangeAction(chatid, "Платная регистрация без страховки", ++currentStep);
                 await client.SendTextMessageAsync(chatid, "Сбросьте вашу геолокацию");
+                return;
             }
             if(currentStep == 5)
             {
@@ -112,14 +115,16 @@ namespace KopterBot.Bot
                     proposal.RealAdress = realAdres;
                     await proposalRepository.Update(proposal);
                     await proposeHandler.ChangeProposeCount();
+                    user.PilotPrivilag = 1;
+                    await userRepository.Update(user);
                     await adminPush.MessageRequisitionAsync(client, chatid);
                 }
             }
         }
-        private async Task CommandHandler_PaidRegistrationWithInsurance(long chatid,string message,MessageEventArgs messageObject = null)
+        private async Task CommandHandler_PaidRegistrationWithInsurance(UserDTO user,string message,MessageEventArgs messageObject = null)
         {
+            long chatid = user.ChatId;
             int currentStep =await userRepository.GetCurrentActionStep(chatid);
-            UserDTO user = await userRepository.FindById(chatid);
             DronDTO dron = new DronDTO();
             ProposalDTO proposal = await proposalRepository.FindById(chatid);
 
@@ -127,7 +132,7 @@ namespace KopterBot.Bot
             {
                 user.FIO = message;
                 await userRepository.Update(user);
-                await userRepository.ChangeAction(chatid, "Платная регистрация со страховкой", 2);
+                await userRepository.ChangeAction(chatid, "Платная регистрация со страховкой", ++currentStep);
                 await client.SendTextMessageAsync(chatid, "Введите телефон");
                 return;
             }
@@ -137,7 +142,7 @@ namespace KopterBot.Bot
                 await proposalRepository.Create(user);
                 user.Phone = message;
                 await userRepository.Update(user);
-                await userRepository.ChangeAction(chatid, "Платная регистрация со страховкой", 3);
+                await userRepository.ChangeAction(chatid, "Платная регистрация со страховкой", ++currentStep);
                 await client.SendTextMessageAsync(chatid, "Введите марку дрона");
                 return;
             }
@@ -146,7 +151,7 @@ namespace KopterBot.Bot
                 dron.Mark = message;
                 await dronRepository.Create(dron);
                 
-                await userRepository.ChangeAction(chatid, "Платная регистрация со страховкой",4);
+                await userRepository.ChangeAction(chatid, "Платная регистрация со страховкой", ++currentStep);
                 await client.SendTextMessageAsync(chatid, "Введите тип страховки");
                 return;
             }
@@ -154,15 +159,17 @@ namespace KopterBot.Bot
             {
                 proposal.TypeOfInsurance = message;
                 await proposalRepository.Update(proposal);
-                await userRepository.ChangeAction(chatid, "Платная регистрация со страховкой", 5);
+                await userRepository.ChangeAction(chatid, "Платная регистрация со страховкой", ++currentStep);
                 await client.SendTextMessageAsync(chatid,"Введите адрес");
+                return;
             }
             if(currentStep == 5)
             {
                 proposal.Adress = message;
                 await proposalRepository.Update(proposal);
-                await userRepository.ChangeAction(chatid, "Платная регистрация со страховкой", 6);
+                await userRepository.ChangeAction(chatid, "Платная регистрация со страховкой", ++currentStep);
                 await client.SendTextMessageAsync(chatid, "Сбросьте вашу геопозицию");
+                return;
             }
             if(currentStep == 6)
             {
@@ -174,12 +181,13 @@ namespace KopterBot.Bot
                     proposal.RealAdress = realAdres;
                     await proposalRepository.Update(proposal);
                     await client.SendTextMessageAsync(chatid, "Ожидаем оплату,если все нормально - кидаем клаву с этими кнопками и если все оплатил кидаем в админ-уведомление"
-                        , 0, false, false, 0,KeyBoardHandler.Murkup_After_Registration());
+                        , 0, false, false, 0,KeyBoardHandler.PilotWithSubscribe_Murkup());
 
                     await proposeHandler.ChangeProposeCount();
-
+                    user.PilotPrivilag = 2;
+                    await userRepository.Update(user);
                     await adminPush.MessageRequisitionAsync(client,chatid);
-                    // можно считать человека зарегистрированым только после оплаты
+                    // можно считать человека зарегистрированым только после оплаты , и определяем насколько он крут в плане полномочий
                     await client.SendTextMessageAsync(chatid, "Вы успешно зарегистрировались");
                 }
             }
@@ -194,81 +202,85 @@ namespace KopterBot.Bot
             chatid = message.Message.Chat.Id;
             string messageText = message.Message.Text;
             string action = await userRepository.GetCurrentActionName(chatid);
+            UserDTO user = await userRepository.FindById(chatid);
 
             await userRepository.AuthenticateUser(chatid);
-
-            //обязательно переписывать надо
-            /*    if(await HubsHandler.IsChatActive(chatid))
-                {
-                    long[] arrChatid = await HubsHandler.GetChatId(chatid);
-
-                    long chatIdRecive = arrChatid[0] == chatid ? arrChatid[1] : arrChatid[0];
-                    await client.SendTextMessageAsync(chatIdRecive, messageText);
-
-                    return;
-                }*/
             await UserLogs.WriteLog(chatid, messageText);
 
-            if (messageText == "/start")
-            {
-                await CommandHandler_Start(chatid);
-            }
-
-            if(messageText == "/chat")
-            {
-                await hubRepository.CreateDialog(chatid, 700781435);
-                var keyboard = new InlineKeyboardMarkup(new InlineKeyboardButton[][]
-                {
-                    new[]
-                    {
-                        new InlineKeyboardButton(){Text="Подтвердить",CallbackData="confirm"}
-                    },
-                    new[]
-                    {
-                        new InlineKeyboardButton(){Text="Отмена",CallbackData="cancel"}
-                    }
-                });
-                await client.SendTextMessageAsync(700781435, $"{message.Message.Chat.Username} хочет с вами связаться", 0, false, false, 0, keyboard);
-            }
-            if (messageText == "/op")
-            {
-                
-            }
+            bool isRegistration = await userRepository.IsUserRegistration(chatid);
             if (messageText == "Назад")
             {
-               // await proposalRepository.DeleteNotFillProposalAsync(chatid);
                 await userRepository.ChangeAction(chatid, "NULL", 0);
                 await CommandHandler_Start(chatid);
 
                 return;
             }
-
+            if (messageText == "/start")
+            {
+                await CommandHandler_Start(chatid);
+                return;
+            }
+            if(CommandList.RegistrationPilotCommandList().Contains(messageText) && user.PilotPrivilag!=0)
+            {
+                await client.SendTextMessageAsync(chatid, "Вы уже зарегестрированы", 0, false, false, 0, KeyBoardHandler.ChangeKeyBoardPilot(user.PilotPrivilag));
+                return;
+            }
+            if(CommandList.RegistrationBuisnessCommandList().Contains(messageText) && user.BuisnesPrivilag!=0)
+            {
+                await client.SendTextMessageAsync(chatid, "Вы уже зарегестрированы", 0, false, false, 0, KeyBoardHandler.Murkup_BuisnessmanMenu());
+                return;
+            }
+            if (messageText == "Пилот")
+            {
+                if (user.PilotPrivilag == 0)
+                {
+                    await client.SendTextMessageAsync(chatid, "Вы зашли как Пилот"
+                        , 0, false, false, 0, KeyBoardHandler.Murkup_Start_Pilot_Mode());
+                    return;
+                }
+                else
+                {
+                    await client.SendTextMessageAsync(chatid, "Вы зашли как пилот",
+                        0, false, false, 0, KeyBoardHandler.ChangeKeyBoardPilot(user.PilotPrivilag));
+                }
+            }
+            if (messageText == "Полный функционал платно")
+            {
+                await client.SendTextMessageAsync(chatid, "Есть несколько вариантов регистрации", 0, false, false, 0, KeyBoardHandler.Markup_Start_Pilot_Payment_Mode());
+            }
+            if (messageText == "Частичные возможности бесплатно")
+            {
+                await client.SendTextMessageAsync(chatid, "Есть несоклько вариантов регистрации",
+                    0, false, false, 0, KeyBoardHandler.Murkup_Start_Pilot_UnBuyer_Mode());
+            }
             #region Платная регистрация для пилота
-            if (messageText == "Платная регистрация со страховкой")
-            {
-                await userRepository.ChangeAction(chatid, "Платная регистрация со страховкой", 1);
-                await client.SendTextMessageAsync(chatid, "Введите ФИО", 0, false, false, 0, KeyBoardHandler.Markup_Back_From_First_Action());
-                return;
-            }
-            if(messageText == "Платная регистрация без страховки")
-            {
-                await userRepository.ChangeAction(chatid, "Платная регистрация без страховки", 1);
-                await client.SendTextMessageAsync(chatid, "Введите ФИО", 0, false, false, 0, KeyBoardHandler.Markup_Back_From_First_Action());
-                return;
-            }
-            #endregion
-            #region бесплатная регистрация для пилота 
             if (messageText == "Со страхованием")
             {
                 await userRepository.ChangeAction(chatid, "Co страхованием", 1);
                 await client.SendTextMessageAsync(chatid, "Введите ФИО", 0, false, false, 0, KeyBoardHandler.Markup_Back_From_First_Action());
                 return;
             }
-            if(messageText == "Без страховки")
+            if (messageText == "Без страховки")
             {
                 await userRepository.ChangeAction(chatid, "Без страховки", 1);
                 await client.SendTextMessageAsync(chatid, "Введите ФИО", 0, false, false, 0, KeyBoardHandler.Markup_Back_From_First_Action());
             }
+            if (messageText == "Платная регистрация со страховкой")
+            {
+                await userRepository.ChangeAction(chatid, "Платная регистрация со страховкой", 1);
+                await client.SendTextMessageAsync(chatid, "Введите ФИО", 0, false, false, 0, KeyBoardHandler.Markup_Back_From_First_Action());
+                return;
+            }
+            if (messageText == "Платная регистрация без страховки")
+            {
+                await userRepository.ChangeAction(chatid, "Платная регистрация без страховки", 1);
+                await client.SendTextMessageAsync(chatid, "Введите ФИО", 0, false, false, 0, KeyBoardHandler.Markup_Back_From_First_Action());
+                return;
+            }
+
+            #endregion
+            #region бесплатная регистрация для пилота 
+
             #endregion
 
             #region Бизнес-Регистрация
@@ -287,41 +299,38 @@ namespace KopterBot.Bot
 
             if (messageText == "Заказчик услуг")
             {
-                await client.SendTextMessageAsync(chatid, "Есть несколько вариантов регистрации",
-                    0, false, false, 0, KeyBoardHandler.Murkup_Start_Buisness_Mode());
+                if (user.BuisnesPrivilag == 0)
+                {
+                    await client.SendTextMessageAsync(chatid, "Есть несколько вариантов регистрации",
+                        0, false, false, 0, KeyBoardHandler.Murkup_Start_Buisness_Mode());
+                }
+                else
+                {
+                    await client.SendTextMessageAsync(chatid, "Вы уже зарегистрированы",
+                        0, false, false,0,KeyBoardHandler.Murkup_BuisnessmanMenu());
+                }
+                return;
             }
-
-            if (messageText == "Полный функционал платно")
-            {
-                await client.SendTextMessageAsync(chatid, "Есть несколько вариантов регистрации",0,false,false,0,KeyBoardHandler.Markup_Start_Pilot_Payment_Mode());
-            }
-
-            if(messageText == "Пилот")
-            {
-                await client.SendTextMessageAsync(chatid, "Вы зашли как Пилот"
-                    ,0,false,false,0, KeyBoardHandler.Murkup_Start_Pilot_Mode());
-            }
-
             if (action!=null)
             {
                 if(action == "Платная регистрация со страховкой")
                 {
-                    await CommandHandler_PaidRegistrationWithInsurance(chatid,messageText,message);
+                    await CommandHandler_PaidRegistrationWithInsurance(user,messageText,message);
                     return;
                 }
                 if(action == "Платная регистрация без страховки")
                 {
-                    await CommandHandler_PaidRegistrationWithoutInsurance(chatid, messageText, message);
+                    await CommandHandler_PaidRegistrationWithoutInsurance(user, messageText, message);
                     return;
                 }
                 if(action == "Со страхованием")
                 {
-                    await CommandHandler_PaidRegistrationWithInsurance(chatid, messageText, message);
+                    await CommandHandler_PaidRegistrationWithInsurance(user, messageText, message);
                     return;
                 }
                 if(action == "Без страховки")
                 {
-                    await CommandHandler_PaidRegistrationWithoutInsurance(chatid, messageText, message);
+                    await CommandHandler_PaidRegistrationWithoutInsurance(user, messageText, message);
                     return;
                 }
                 if(action == "Корпоративная бизнесс-регистрация")
@@ -329,13 +338,6 @@ namespace KopterBot.Bot
                     await CommandHandler_BuisnessRegistrationKorporativ(chatid, messageText, message);
                     return;
                 }
-            }
-
-
-            if (messageText == "Частичные возможности бесплатно")
-            {
-                await client.SendTextMessageAsync(chatid, "Есть несоклько вариантов регистрации",
-                    0, false, false, 0, KeyBoardHandler.Murkup_Start_Pilot_UnBuyer_Mode());
             }
         }
     }

@@ -8,6 +8,6 @@ namespace KopterBot.Interfaces.Bot
 {
     interface IMessageHandler
     {
-        Task BaseHandlerMessage(MessageEventArgs message, string text);
+        Task BaseHandlerMessage(MessageEventArgs message, string text );
     }
 }

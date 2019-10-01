@@ -1,6 +1,7 @@
 ﻿using KopterBot.Bot;
 using KopterBot.Bot.CommonHandler;
 using KopterBot.DTO;
+using KopterBot.Providers;
 using KopterBot.Repository;
 using System;
 using System.Collections.Generic;
@@ -23,6 +24,8 @@ namespace KopterBot.Base.BaseClass
                 return _managerPush;
             }
         }
+        protected CommandProvider _commandProvider;
+
         protected HubsHandler hubsHandler
         {
             get
@@ -48,6 +51,15 @@ namespace KopterBot.Base.BaseClass
                 if (_adminPush == null)
                     _adminPush = new AdminsPush();
                 return _adminPush;
+            }
+        }
+        protected CommandProvider commandProvider
+        {
+            get
+            {
+                if (_commandProvider == null)
+                    _commandProvider = new CommandProvider();
+                return _commandProvider;
             }
         }
     }

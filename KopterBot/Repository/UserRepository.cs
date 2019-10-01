@@ -73,10 +73,19 @@ namespace KopterBot.Repository
             user.step.CurrentStep = step;
             await Update(user);
         }
-       
         public async ValueTask<bool> IsAuthenticate(long chatid)
         {
             return await FindById(chatid) != null ? true : false;
+        }
+
+        public async ValueTask<bool> IsUserRegistration(long chatid)
+        {
+            ProposalDTO proposal = await db.proposalsDTO.FirstOrDefaultAsync(i => i.ChatId == chatid);
+            if (proposal == null)
+                return false;
+            if(proposal.longtitude.HasValue && proposal.latitude.HasValue)
+                return true;
+            return false;
         }
     }
 }
