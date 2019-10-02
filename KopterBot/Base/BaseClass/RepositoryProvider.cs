@@ -1,4 +1,6 @@
-﻿namespace KopterBot.Repository
+﻿using System.Threading.Tasks;
+
+namespace KopterBot.Repository
 {
     class RepositoryProvider
     {
@@ -86,6 +88,5 @@
                 return _storageRepository;
             }
         }
-
     }
 }

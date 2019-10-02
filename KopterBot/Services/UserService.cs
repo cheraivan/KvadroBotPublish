@@ -2,7 +2,6 @@
 using KopterBot.Repository;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,6 +9,14 @@ namespace KopterBot.Services
 {
     class UserService:RepositoryProvider
     {
+        public async ValueTask<UserDTO> FindById(long chatid)
+        {
+            return await userRepository.FindById(chatid);
+        }
+        public async Task Update(UserDTO user)
+        {
+             await userRepository.Update(user);
+        }
         public async Task AuthenticateUser(long chatid)
         {
             UserDTO user = await userRepository.FindById(chatid);
@@ -71,40 +78,6 @@ namespace KopterBot.Services
             if (proposal.longtitude.HasValue && proposal.latitude.HasValue)
                 return true;
             return false;
-        }
-    }
-    class AdminService: RepositoryProvider
-    {
-
-    }
-    class DronService : RepositoryProvider
-    {
-
-    }
-    class BuisnessTaskService : RepositoryProvider
-    {
-    }
-    class StepService : RepositoryProvider
-    {
-    }
-    class HubService : RepositoryProvider
-    {
-    }
-    class StorageService
-    {
-    }
-
-    class ServiceProvider:RepositoryProvider
-    {
-        private UserService _userService;
-        public UserService userService
-        {
-            get
-            {
-                if (_userService == null)
-                    _userService = new UserService();
-                return _userService;
-            }
         }
     }
 }

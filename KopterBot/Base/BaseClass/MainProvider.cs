@@ -16,7 +16,7 @@ namespace KopterBot.Base.BaseClass
         private HubsHandler _hubsHandler;
         private CountProposeHandler _proposeHandler;
         private ManagerPush _managerPush;
-        protected ManagerPush managerPush
+        public ManagerPush managerPush
         {
             get
             {
@@ -27,7 +27,7 @@ namespace KopterBot.Base.BaseClass
         }
         protected CommandProvider _commandProvider;
 
-        protected HubsHandler hubsHandler
+        public HubsHandler hubsHandler
         {
             get
             {
@@ -36,7 +36,7 @@ namespace KopterBot.Base.BaseClass
                 return _hubsHandler;
             }
         }
-        protected CountProposeHandler proposeHandler
+        public CountProposeHandler proposeHandler
         {
             get
             {
@@ -45,7 +45,7 @@ namespace KopterBot.Base.BaseClass
                 return _proposeHandler;
             }
         }
-        protected AdminsPush adminPush
+        public AdminsPush adminPush
         {
             get
             {
@@ -54,7 +54,7 @@ namespace KopterBot.Base.BaseClass
                 return _adminPush;
             }
         }
-        protected CommandProvider commandProvider
+        public CommandProvider commandProvider
         {
             get
             {
