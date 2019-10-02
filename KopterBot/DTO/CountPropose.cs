@@ -22,8 +22,8 @@ namespace KopterBot.DTO
     {
         public async ValueTask<int> GetCount()
         {
-           IEnumerable<CountPropose> c = await countProposeRepository.Get();
-           return c.ToList()[0].Count;
+           CountPropose c = await countProposeRepository.Get().FirstOrDefaultAsync();
+            return c.Count;
         }
 
         public async Task ChangeProposeCount()
@@ -35,8 +35,7 @@ namespace KopterBot.DTO
                 c.Count = 1;
                 await countProposeRepository.Create(c);
             }
-            IEnumerable<CountPropose> entity = await countProposeRepository.Get();
-            CountPropose countPropose = entity.ToList()[0];
+            CountPropose countPropose = await countProposeRepository.Get().FirstOrDefaultAsync();
             countPropose.Count = countPropose.Count + 1;
             await countProposeRepository.Update(countPropose);
         }

@@ -36,13 +36,12 @@ namespace KopterBot.Base.BaseClass
         {
             if (item == null)
                 throw new NullReferenceException();
-
             db.Entry(item).State = EntityState.Modified;
             await db.SaveChangesAsync();
         }
-        public async override ValueTask<IEnumerable<T>> Get()
+        public override IQueryable<T> Get()
         {
-            return await dbSet.ToListAsync();
+            return dbSet;
         }
         public async override ValueTask<IEnumerable<T>> Get(Func<T, bool> predicate)
         {

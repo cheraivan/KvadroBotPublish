@@ -1,12 +1,14 @@
-﻿using KopterBot.DTO;
+﻿using KopterBot.Base.BaseClass;
+using KopterBot.DTO;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace KopterBot.Base
 {
-    class BaseProvider<T>:IBaseProvider<T>
+    class BaseProvider<T>:DbProvider<T>,IBaseProvider<T>
     {
         private ApplicationContext _db;
         protected ApplicationContext db
@@ -39,7 +41,7 @@ namespace KopterBot.Base
             throw new NotImplementedException("method has to be override");
         }
 
-        public virtual ValueTask<IEnumerable<T>> Get()
+        public virtual IQueryable<T> Get()
         {
             throw new NotImplementedException("method has to be override");
         }

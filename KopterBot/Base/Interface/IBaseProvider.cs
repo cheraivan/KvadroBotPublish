@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace KopterBot.Base
@@ -14,7 +15,7 @@ namespace KopterBot.Base
         ValueTask<T> FirstElement(Func<T, bool> predicate);
         ValueTask<T> LastElement(Func<T, bool> predicate);
 
-        ValueTask<IEnumerable<T>> Get();
+        IQueryable<T> Get();
 
         ValueTask<IEnumerable<T>> Get(Func<T, bool> predicate);
     }
