@@ -204,7 +204,7 @@ namespace KopterBot.Bot
             string action = await userRepository.GetCurrentActionName(chatid);
             UserDTO user = await userRepository.FindById(chatid);
 
-            await userRepository.AuthenticateUser(chatid);
+            await userService.AuthenticateUser(chatid);
             await UserLogs.WriteLog(chatid, messageText);
 
             bool isRegistration = await userRepository.IsUserRegistration(chatid);

@@ -3,13 +3,14 @@ using KopterBot.Bot.CommonHandler;
 using KopterBot.DTO;
 using KopterBot.Providers;
 using KopterBot.Repository;
+using KopterBot.Services;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace KopterBot.Base.BaseClass
 {
-    class MainProvider:RepositoryProvider
+    class MainProvider:ServiceProvider
     {
         private AdminsPush _adminPush;
         private HubsHandler _hubsHandler;

@@ -29,7 +29,7 @@ namespace KopterBot.Bot.CommonHandler
 
 
             int numberOfPurpost = await propose.GetCount();
-            UserDTO user = await userRepository.FirstElement(i => i.ChatId == proposal.ChatId);
+            UserDTO user = await userRepository.Get().FirstOrDefaultAsync(i => i.ChatId == proposal.ChatId);
 
            
 
