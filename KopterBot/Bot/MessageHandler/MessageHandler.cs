@@ -236,4 +236,3 @@ namespace KopterBot.Bot
         }
     }
 }
- 

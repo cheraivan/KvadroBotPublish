@@ -29,9 +29,17 @@ namespace KopterBot.PilotCommands
             }
             BuisnessTaskDTO task = await provider.buisnessTaskService.GetFirstElement();
             string message = $"Заявка номер: {task.Id} " +
-                $"Регион: {task.Region} " +
-                $"Описание: {task.Description} " +
-                $"Сумма: {task.Sum}";
+               $"Регион: {task.Region} " +
+               $"Описание: {task.Description} " +
+               $"Сумма: {task.Sum}";
+
+            if (countTask == 1)
+            {
+                await client.SendTextMessageAsync(chatid, message);
+                return;
+            }
+
+           
             await client.SendTextMessageAsync(chatid, message, 0, false, false, 0, KeyBoardHandler.CallBackShowOrders());
         }
     }
@@ -41,7 +49,10 @@ namespace KopterBot.PilotCommands
 
         public async Task ShowOrdersCallBack(CallbackQueryEventArgs callback)
         {
-
+            if(callback.CallbackQuery.Data == "Next")
+            {
+                BuisnessTaskDTO task = await provider.s
+            }
         }
     }
 }

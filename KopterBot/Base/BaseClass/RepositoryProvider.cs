@@ -13,6 +13,17 @@ namespace KopterBot.Repository
         private CountProposeRepository _countProposeRepository;
         private ManagerRepository _managerRepository;
         private BuisnessTaskRepository _buisnessTaskRepository;
+        private ShowOrdersRepository _showOrdersRepository;
+
+        protected ShowOrdersRepository showOrdersRepository
+        {
+            get
+            {
+                if (_showOrdersRepository == null)
+                    _showOrdersRepository = new ShowOrdersRepository();
+                return _showOrdersRepository;
+            }
+        }
 
         protected BuisnessTaskRepository buisnessTaskRepository
         {
