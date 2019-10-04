@@ -38,15 +38,22 @@ namespace KopterBot.BuisnessCommand
                 };
                 await provider.buisnessTaskService.Create(newTask);
                 await client.SendTextMessageAsync(chatid, "Введите описание вашего задания");
-                await provider.userService.ChangeAction(chatid, "Создание задачи", ++currentStep);
+                await provider.userService.ChangeAction(chatid, "Создать новую задачу", ++currentStep);
                 return;
             }
             if(currentStep == 2)
             {
                 currTask.Description = message;
                 await provider.buisnessTaskService.Update(currTask);
-                await provider.userService.ChangeAction();
+                await provider.userService.ChangeAction(chatid,"Создать новую задачу",++currentStep);
                 await client.SendTextMessageAsync(chatid, "Введите примерную сумму которую вы готовы потратить");
+                return;
+            }
+            if(currentStep==3)
+            {
+                currTask.Sum = Convert.ToInt32(message);
+                await provider.buisnessTaskService.Update(currTask);
+                await client.SendTextMessageAsync(chatid, "Задача успешно создана");
                 return;
             }
         }

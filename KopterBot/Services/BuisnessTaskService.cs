@@ -1,5 +1,6 @@
 ﻿using KopterBot.DTO;
 using KopterBot.Repository;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,12 +9,18 @@ namespace KopterBot.Services
 {
     class BuisnessTaskService : RepositoryProvider
     {
+        public async ValueTask<int> CountTask() =>
+            await buisnessTaskRepository.Get().CountAsync();
         public async Task Update(BuisnessTaskDTO task)
         {
             if (task == null)
                 throw new Exception("task cannot be null");
             await buisnessTaskRepository.Update(task);
         }
+
+        public async ValueTask<BuisnessTaskDTO> GetFirstElement() =>
+            await buisnessTaskRepository.Get().FirstOrDefaultAsync();
+
         public async ValueTask<BuisnessTaskDTO> FindTask(long chatid)
         {
             return buisnessTaskRepository.Get().FirstOrDefault(i => i.ChatId == chatid);
@@ -33,5 +40,6 @@ namespace KopterBot.Services
                 return false;
             return true;
         }
+
     }
 }

@@ -178,6 +178,10 @@ namespace KopterBot.Bot
                 {
                     new[]
                     {
+                        new KeyboardButton("Просмотр заказов")
+                    },
+                    new[]
+                    {
                         new KeyboardButton("Хочу лететь здесь и сейчас")
                     },
                     new[]
@@ -223,7 +227,7 @@ namespace KopterBot.Bot
                 return PilotWithSubscribe_Murkup();
             throw new Exception("incorrect value");
         }
-        public IReplyMarkup ChatConfirm()
+        public static IReplyMarkup ChatConfirm()
         {
             var keyboard = new InlineKeyboardMarkup(new InlineKeyboardButton[][]
                {
@@ -237,6 +241,20 @@ namespace KopterBot.Bot
                     }
                });
             return keyboard;
+        }
+        public static IReplyMarkup CallBackShowOrders()
+        {
+            return new InlineKeyboardMarkup(new InlineKeyboardButton[][]
+            {
+                new[]
+                {
+                    new InlineKeyboardButton(){Text = "⏩",CallbackData="Next"}
+                },
+                new[]
+                {
+                    new InlineKeyboardButton(){Text = "⏪",CallbackData="Back"}
+                }
+            });
         }
     }
 }
