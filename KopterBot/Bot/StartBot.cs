@@ -1,4 +1,5 @@
-﻿using KopterBot.Commons;
+﻿using KopterBot.Base.BaseClass;
+using KopterBot.Commons;
 using KopterBot.DTO;
 using KopterBot.Interfaces;
 using KopterBot.Interfaces.Bot;
@@ -19,7 +20,7 @@ namespace KopterBot.Bot
         public void BotRun()
         {
             context.Database.EnsureCreated();
-            Services.ServiceProvider provider = new Services.ServiceProvider();
+            MainProvider provider = new MainProvider();
             client = new TelegramBotClient(Constant.Token);
             client.StartReceiving();
 

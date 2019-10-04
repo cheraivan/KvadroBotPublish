@@ -96,14 +96,14 @@ namespace KopterBot.Bot
             if(currentStep == 3)
             {
                 dron.Mark = message;
-                await dronRepository.Create(dron);
+                await provider.dronService.Create(dron);
                 await provider.userService.ChangeAction(chatid, "Платная регистрация без страховки", ++currentStep);
                 await client.SendTextMessageAsync(chatid, "Введите адрес");
                 return;
             }
             if(currentStep == 4)
             {
-                await proposalRepository.Create(user);
+                await provider.proposalService.Create(user);
                 proposal.Adress = message;
                 await provider.proposalService.Update(proposal);
                 await provider.userService.ChangeAction(chatid, "Платная регистрация без страховки", ++currentStep);
@@ -118,11 +118,11 @@ namespace KopterBot.Bot
                     proposal.latitude = messageObject.Message.Location.Latitude;
                     string realAdres = await GeolocateHandler.GetAddressFromCordinat(proposal.longtitude, proposal.latitude);
                     proposal.RealAdress = realAdres;
-                    await proposalRepository.Update(proposal);
-                    await proposeHandler.ChangeProposeCount();
+                    await provider.proposalService.Update(proposal);
+                    await provider.proposeHandler.ChangeProposeCount();
                     user.PilotPrivilag = 1;
-                    await userRepository.Update(user);
-                    await adminPush.MessageRequisitionAsync(client, chatid);
+                    await provider.userService.Update(user);
+                    await provider.adminPush.MessageRequisitionAsync(client,provider,chatid);
                 }
             }
         }
@@ -144,35 +144,35 @@ namespace KopterBot.Bot
     
             if(currentStep == 2)
             {
-                await proposalRepository.Create(user);
+                await provider.proposalService.Create(user);
                 user.Phone = message;
-                await userRepository.Update(user);
-                await userRepository.ChangeAction(chatid, "Платная регистрация со страховкой", ++currentStep);
+                await provider.userService.Update(user);
+                await provider.userService.ChangeAction(chatid, "Платная регистрация со страховкой", ++currentStep);
                 await client.SendTextMessageAsync(chatid, "Введите марку дрона");
                 return;
             }
             if(currentStep == 3)
             {
                 dron.Mark = message;
-                await dronRepository.Create(dron);
+                await provider.dronService.Create(dron);
                 
-                await userRepository.ChangeAction(chatid, "Платная регистрация со страховкой", ++currentStep);
+                await provider.userService.ChangeAction(chatid, "Платная регистрация со страховкой", ++currentStep);
                 await client.SendTextMessageAsync(chatid, "Введите тип страховки");
                 return;
             }
             if(currentStep == 4)
             {
                 proposal.TypeOfInsurance = message;
-                await proposalRepository.Update(proposal);
-                await userRepository.ChangeAction(chatid, "Платная регистрация со страховкой", ++currentStep);
+                await provider.proposalService.Update(proposal);
+                await provider.userService.ChangeAction(chatid, "Платная регистрация со страховкой", ++currentStep);
                 await client.SendTextMessageAsync(chatid,"Введите адрес");
                 return;
             }
             if(currentStep == 5)
             {
                 proposal.Adress = message;
-                await proposalRepository.Update(proposal);
-                await userRepository.ChangeAction(chatid, "Платная регистрация со страховкой", ++currentStep);
+                await provider.proposalService.Update(proposal);
+                await provider.userService.ChangeAction(chatid, "Платная регистрация со страховкой", ++currentStep);
                 await client.SendTextMessageAsync(chatid, "Сбросьте вашу геопозицию");
                 return;
             }
@@ -184,14 +184,14 @@ namespace KopterBot.Bot
                     proposal.latitude = messageObject.Message.Location.Latitude;
                     string realAdres = await GeolocateHandler.GetAddressFromCordinat(proposal.longtitude, proposal.latitude);
                     proposal.RealAdress = realAdres;
-                    await proposalRepository.Update(proposal);
+                    await provider.proposalService.Update(proposal);
                     await client.SendTextMessageAsync(chatid, "Ожидаем оплату,если все нормально - кидаем клаву с этими кнопками и если все оплатил кидаем в админ-уведомление"
                         , 0, false, false, 0,KeyBoardHandler.PilotWithSubscribe_Murkup());
 
-                    await proposeHandler.ChangeProposeCount();
+                    await provider.proposeHandler.ChangeProposeCount();
                     user.PilotPrivilag = 2;
-                    await userRepository.Update(user);
-                    await adminPush.MessageRequisitionAsync(client,chatid);
+                    await provider.userService.Update(user);
+                    await provider.adminPush.MessageRequisitionAsync(client,provider,chatid);
                     // можно считать человека зарегистрированым только после оплаты , и определяем насколько он крут в плане полномочий
                     await client.SendTextMessageAsync(chatid, "Вы успешно зарегистрировались");
                 }
@@ -210,7 +210,7 @@ namespace KopterBot.Bot
             UserDTO user = await provider.userService.FindById(chatid);
 
             await provider.userService.AuthenticateUser(chatid);
-            await UserLogs.WriteLog(chatid, messageText);
+          //  await UserLogs.WriteLog(chatid, messageText);
 
             bool isRegistration = await provider.userService.IsUserRegistration(chatid);
             if (messageText == "Назад")

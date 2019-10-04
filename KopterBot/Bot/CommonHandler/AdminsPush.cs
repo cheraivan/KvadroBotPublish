@@ -1,6 +1,7 @@
 ﻿using KopterBot.Base;
 using KopterBot.DTO;
 using KopterBot.Repository;
+using KopterBot.Services;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -11,26 +12,25 @@ using Telegram.Bot;
 
 namespace KopterBot.Bot.CommonHandler
 {
-    class AdminsPush:RepositoryProvider
+    class AdminsPush
     {
         private CountProposeHandler propose;
         public AdminsPush()
         {
             propose = new CountProposeHandler();
         }
-        public async Task MessageRequisitionAsync(TelegramBotClient  client , long chatid)
+        public async Task MessageRequisitionAsync(TelegramBotClient  client ,ServiceProvider provider,long chatid)
         {
-            int countAdmin = await adminRepository.CountAdmins();
+            int countAdmin = await provider.adminService.CountAdmins();
             if (countAdmin == 0)
                 return;
-            List<long> admins = await adminRepository.GetChatId();
+            List<long> admins = await provider.adminService.GetChatId();
 
-            ProposalDTO proposal =await proposalRepository.FindById(chatid);
+            ProposalDTO proposal =await provider.proposalService.FindById(chatid);
 
 
             int numberOfPurpost = await propose.GetCount();
-            UserDTO user = await userRepository.Get().FirstOrDefaultAsync(i => i.ChatId == proposal.ChatId);
-
+            UserDTO user = await provider.userService.FindUserByPredicate(i => i.ChatId == proposal.ChatId);
            
 
             if (user == null)
@@ -47,7 +47,7 @@ namespace KopterBot.Bot.CommonHandler
             StorageDTO storage = new StorageDTO();
             storage.Message = message;
 
-            await storageRepository.Create(storage);
+            await provider.storageService.Create(storage);
             foreach(long _chatid in admins)
             {
                await client.SendTextMessageAsync(_chatid, message);

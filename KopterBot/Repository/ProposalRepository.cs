@@ -11,10 +11,10 @@ namespace KopterBot.Repository
 {
     class ProposalRepository:BaseProviderImpementation<ProposalDTO>
     {
-        public async ValueTask<int> GetCurrentNumberProposalAsync(long chatid)
+        public async Task RemoveRange(IEnumerable<ProposalDTO> lst)
         {
-            UserDTO user = await db.Users.FirstOrDefaultAsync(i => i.ChatId == chatid);
-            return user.proposals.Count;
+            db.RemoveRange(lst);
+            await db.SaveChangesAsync();
         }
         public async Task Create(UserDTO user)
         {
@@ -28,26 +28,6 @@ namespace KopterBot.Repository
                 ChatId = user.ChatId
             };
             await base.Create(porposal);
-        }
-
-        public async override ValueTask<ProposalDTO> FindById(long id)
-        {
-            return await db.proposalsDTO
-                .FirstOrDefaultAsync(i => i.ChatId == id);
-        }
-
-        public async Task DeleteNotFillProposalAsync(long chatid)
-        {
-            int count = await db.proposalsDTO.Where(i => i.ChatId == chatid)
-                .CountAsync();
-            if (count == 0)
-                return;
-            count = await db.proposalsDTO.Where(i => i.longtitude == null).CountAsync();
-            if (count == 0)
-                return;
-            IEnumerable<ProposalDTO> Ids = db.proposalsDTO.Where(i => i.longtitude == null);
-            db.proposalsDTO.RemoveRange(Ids);
-            await db.SaveChangesAsync();
         }
     }
 }

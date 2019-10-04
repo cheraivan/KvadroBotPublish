@@ -25,7 +25,7 @@ namespace KopterBot.Bot
         private async Task CallBackHandler_Confirm(long chatid)
         {
             HubDTO hub = await hubRepository.Get().FirstOrDefaultAsync(i => i.ChatIdReceiver == chatid);
-            await hubRepository.ConfirmDialog("Начать", hub.ChatIdCreater, chatid);
+            //await hubRepository.ConfirmDialog("Начать", hub.ChatIdCreater, chatid);
         }
         #endregion
 

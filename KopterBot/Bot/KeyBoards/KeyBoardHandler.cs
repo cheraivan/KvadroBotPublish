@@ -15,6 +15,10 @@ namespace KopterBot.Bot
                 {
                     new[]
                     {
+                        new KeyboardButton("Создать заказ")
+                    },
+                    new[]
+                    {
                         new KeyboardButton("Партнеры")
                     },
                     new[]
