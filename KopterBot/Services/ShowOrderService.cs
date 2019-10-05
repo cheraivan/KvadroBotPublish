@@ -68,16 +68,28 @@ namespace KopterBot.Services
 
         public async ValueTask<BuisnessTaskDTO> GetPreviousProduct(long chatid,bool isBuisnessman = false)
         {
-            if(isBuisnessman)
-            {
-                return null;
-            }
             int messageId = await GetMessageId(chatid);
-            int? idPreviousProduct = await PreviousProduct(chatid, messageId);
-            BuisnessTaskDTO task = await buisnessTaskRepository.Get().FirstOrDefaultAsync(i => i.Id == idPreviousProduct);
+            int? idPreviousProduct;
+            BuisnessTaskDTO task;
+            ShowOrdersDTO order;
+
+            if (isBuisnessman)
+            {
+
+                idPreviousProduct = await PreviousProduct(chatid, messageId, true);
+                task = await buisnessTaskRepository.Get().FirstOrDefaultAsync(i => i.Id == idPreviousProduct);
+                if (task == null)
+                    return null;
+                order = await showOrdersRepository.Get().FirstOrDefaultAsync(i => i.ChatId == chatid);
+                order.CurrentProductId = task.Id;
+                await showOrdersRepository.Update(order);
+                return task;
+            }
+            idPreviousProduct = await PreviousProduct(chatid, messageId,true);
+            task = await buisnessTaskRepository.Get().FirstOrDefaultAsync(i => i.Id == idPreviousProduct);
             if (task == null)
                 return null;
-            ShowOrdersDTO order = await showOrdersRepository.Get().FirstOrDefaultAsync(i => i.ChatId == chatid);
+            order = await showOrdersRepository.Get().FirstOrDefaultAsync(i => i.ChatId == chatid);
             order.CurrentProductId = task.Id;
             await showOrdersRepository.Update(order);
 

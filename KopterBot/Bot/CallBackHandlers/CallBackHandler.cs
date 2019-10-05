@@ -52,6 +52,10 @@ namespace KopterBot.Bot
             {
                 await ordersCallback.ShowOrdersCallBack(callback);
             }
+            if(callback.CallbackQuery.Data == "BuisnessNext" || callback.CallbackQuery.Data == "BuisnessBack")
+            {
+                await ordersCallback.ShowMyOrdersCallBack(callback);
+            }
         }
     }
 }

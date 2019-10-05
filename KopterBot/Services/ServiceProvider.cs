@@ -13,6 +13,17 @@ namespace KopterBot.Services
         private StorageService _storageService;
         private ProposalService _proposalService;
         private ShowOrderService _showOrderService;
+        private OfferService _offerService;
+
+        public OfferService offerService
+        {
+            get
+            {
+                if (_offerService == null)
+                    _offerService = new OfferService();
+                return _offerService;
+            }
+        }
 
         public ShowOrderService showOrderService
         {

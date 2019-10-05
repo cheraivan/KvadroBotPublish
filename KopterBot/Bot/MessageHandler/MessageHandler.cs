@@ -205,6 +205,10 @@ namespace KopterBot.Bot
             {
                 await showOrders.ShowAllOrders(chatid, message);
             }
+            if(messageText == "Просмотреть свои заказы")
+            {
+                await showOrders.ShowAllOrders(chatid, message, true);
+            }
 
             if (action!=null)
             {

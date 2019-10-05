@@ -13,6 +13,40 @@ namespace KopterBot.PilotCommands
     {
         public CallBackOrders(TelegramBotClient client,MainProvider provider) : base(client, provider) { }
 
+        public async Task ShowMyOrdersCallBack(CallbackQueryEventArgs callback)
+        {
+            long chatid = callback.CallbackQuery.Message.Chat.Id;
+            if(callback.CallbackQuery.Data == "BuisnessNext")
+            {
+                BuisnessTaskDTO task = await provider.showOrderService.GetNextProduct(chatid, true);
+                if(task == null)
+                {
+                    await client.SendTextMessageAsync(chatid, "Это была последняя задача");
+                    return;
+                }
+                int messageId = await provider.showOrderService.GetMessageId(chatid);
+                string message = $"Заявка номер: {task.Id} \n" +
+                   $"Регион: {task.Region} \n" +
+                   $"Описание: {task.Description} \n" +
+                   $"Сумма: {task.Sum}";
+                await client.EditMessageTextAsync(chatid, messageId + 1, message, 0, false, (InlineKeyboardMarkup)KeyBoardHandler.CallBackShowOrdersForBuisnessman());
+            }
+            if (callback.CallbackQuery.Data == "BuisnessBack")
+            {
+                BuisnessTaskDTO task = await provider.showOrderService.GetPreviousProduct(chatid,true);
+                if (task == null)
+                {
+                    await client.SendTextMessageAsync(chatid, "Это первая задача");
+                }
+                int messageId = await provider.showOrderService.GetMessageId(chatid);
+                string message = $"Заявка номер: {task.Id} \n" +
+                   $"Регион: {task.Region} \n" +
+                   $"Описание: {task.Description} \n" +
+                   $"Сумма: {task.Sum}";
+                await client.EditMessageTextAsync(chatid, messageId + 1, message, 0, false, (InlineKeyboardMarkup)KeyBoardHandler.CallBackShowOrdersForBuisnessman());
+            }
+        }
+
         public async Task ShowOrdersCallBack(CallbackQueryEventArgs callback)
         {
             long chatid = callback.CallbackQuery.Message.Chat.Id;

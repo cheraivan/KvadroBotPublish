@@ -20,6 +20,7 @@ namespace KopterBot.DTO
         public DbSet<StorageDTO> Storage { get; set; }
         public DbSet<ManagerDTO> Managers { get; set; }
         public DbSet<BuisnessTaskDTO> buisnessTasks { get; set; }
+        public DbSet<OfferDTO> offers { get; set; }
 
         public DbSet<ShowOrdersDTO> showOrdersDTO { get; set; }
 

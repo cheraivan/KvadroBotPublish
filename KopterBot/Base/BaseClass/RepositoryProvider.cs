@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using KopterBot.Services;
+using System.Threading.Tasks;
 
 namespace KopterBot.Repository
 {
@@ -14,6 +15,17 @@ namespace KopterBot.Repository
         private ManagerRepository _managerRepository;
         private BuisnessTaskRepository _buisnessTaskRepository;
         private ShowOrdersRepository _showOrdersRepository;
+        private OfferRepository _offerRepository;
+
+        protected OfferRepository offerRepository
+        {
+            get
+            {
+                if (_offerRepository == null)
+                    _offerRepository = new OfferRepository();
+                return _offerRepository;
+            }
+        }
 
         protected ShowOrdersRepository showOrdersRepository
         {
