@@ -23,7 +23,11 @@ namespace KopterBot.Bot
                     },
                     new[]
                     {
-                    new KeyboardButton("Просмотр заказов")
+                        new KeyboardButton("Просмотр заказов")
+                    },
+                    new[]
+                    {
+                        new KeyboardButton("Назад")
                     }
                 },
                 ResizeKeyboard = true
@@ -75,6 +79,10 @@ namespace KopterBot.Bot
                     new[]
                     {
                         new KeyboardButton("Создать новую задачу")
+                    },
+                    new[]
+                    {
+                        new KeyboardButton("Назад")
                     }
                 },
                 ResizeKeyboard = true
@@ -197,6 +205,10 @@ namespace KopterBot.Bot
                     new[]
                     {
                         new KeyboardButton("SOS")
+                    },
+                    new[]
+                    {
+                        new KeyboardButton("Назад")
                     }
                 },
                 ResizeKeyboard = true
@@ -246,6 +258,10 @@ namespace KopterBot.Bot
         {
             return new InlineKeyboardMarkup(new InlineKeyboardButton[][]
             {
+                new[]
+                {
+                    new InlineKeyboardButton(){Text = "Оставить заявку" , CallbackData="RequestTask"}
+                },
                 new[]
                 {
                     new InlineKeyboardButton(){Text = "⏩",CallbackData="Next"}

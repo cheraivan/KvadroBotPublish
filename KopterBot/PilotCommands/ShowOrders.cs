@@ -28,9 +28,9 @@ namespace KopterBot.PilotCommands
                 return;
             }
             BuisnessTaskDTO task = await provider.buisnessTaskService.GetFirstElement();
-            string message = $"Заявка номер: {task.Id} " +
-               $"Регион: {task.Region} " +
-               $"Описание: {task.Description} " +
+            string message = $"Заявка номер: {task.Id} \n" +
+               $"Регион: {task.Region} \n" +
+               $"Описание: {task.Description} \n" +
                $"Сумма: {task.Sum}";
 
             if (countTask == 1)
@@ -38,21 +38,9 @@ namespace KopterBot.PilotCommands
                 await client.SendTextMessageAsync(chatid, message);
                 return;
             }
-
-           
+            await provider.showOrderService.SetDefaultProduct(chatid);
+            await provider.showOrderService.ChangeMessageId(chatid, messageObject.Message.MessageId);
             await client.SendTextMessageAsync(chatid, message, 0, false, false, 0, KeyBoardHandler.CallBackShowOrders());
-        }
-    }
-    class CallBackOrders : ShowOrders
-    {
-        public CallBackOrders(TelegramBotClient client,MainProvider provider) : base(client, provider) { }
-
-        public async Task ShowOrdersCallBack(CallbackQueryEventArgs callback)
-        {
-            if(callback.CallbackQuery.Data == "Next")
-            {
-                BuisnessTaskDTO task = await provider.s
-            }
         }
     }
 }

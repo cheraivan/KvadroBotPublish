@@ -34,6 +34,7 @@ namespace KopterBot.Bot
 
         BuisnessAction buisnessAction;
         RegistrationPilotCommand registrationPilotsCommand;
+        ShowOrders showOrders;
 
         public MessageHandler(TelegramBotClient client, MainProvider provider)
         {
@@ -41,9 +42,8 @@ namespace KopterBot.Bot
             this.provider = provider;
             buisnessAction = new BuisnessAction(provider, client);
             registrationPilotsCommand = new RegistrationPilotCommand(client,provider);
+            showOrders = new ShowOrders(client, provider);
         }
-
-        #region PrivateHandlers
         #region BuisnessRegistration
         private async Task CommandHandler_BuisnessRegistrationKorporativ(long chatid,string message,MessageEventArgs messageObject)
         {
@@ -173,9 +173,10 @@ namespace KopterBot.Bot
 
                 return;
             }
-            if(messageText == "Индивидуальный")
+            if(messageText == "Частный клиент")
             {
-
+                await provider.userService.ChangeAction(chatid, "Корпоративная бизнесс-регистрация", 1);
+                await client.SendTextMessageAsync(chatid, "Введите ФИО", 0, false, false, 0, KeyBoardHandler.Markup_Back_From_First_Action());
             }
             #endregion
 
@@ -198,6 +199,11 @@ namespace KopterBot.Bot
             {
                 await provider.userService.ChangeAction(chatid, "Создать новую задачу", 1);
                 await client.SendTextMessageAsync(chatid,"Введите регион");
+            }
+
+            if(messageText == "Просмотр заказов")
+            {
+                await showOrders.ShowAllOrders(chatid, message);
             }
 
             if (action!=null)

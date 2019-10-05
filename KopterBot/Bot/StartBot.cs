@@ -26,7 +26,7 @@ namespace KopterBot.Bot
 
             List<string> commandList = CommandList.GetCommands();
             var scope = new ServiceCollection().AddScoped<IMessageHandler, MessageHandler>(x => new MessageHandler(client,provider))
-                .AddScoped<ICallbackHandler,CallBackHandler>(i=>new CallBackHandler(client)).BuildServiceProvider();
+                .AddScoped<ICallbackHandler,CallBackHandler>(i=>new CallBackHandler(client,provider)).BuildServiceProvider();
 
             client.OnCallbackQuery += async (object sender, CallbackQueryEventArgs args) =>
             {

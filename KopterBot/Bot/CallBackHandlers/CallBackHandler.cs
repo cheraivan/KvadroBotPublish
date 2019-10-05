@@ -1,5 +1,7 @@
-﻿using KopterBot.DTO;
+﻿using KopterBot.Base.BaseClass;
+using KopterBot.DTO;
 using KopterBot.Interfaces;
+using KopterBot.PilotCommands;
 using KopterBot.Repository;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -16,9 +18,13 @@ namespace KopterBot.Bot
     class CallBackHandler:RepositoryProvider,ICallbackHandler
     {
         TelegramBotClient client;
-        public CallBackHandler(TelegramBotClient client)
+        MainProvider provider;
+        CallBackOrders ordersCallback;
+        public CallBackHandler(TelegramBotClient client,MainProvider provider)
         {
+            this.provider = provider;
             this.client = client;
+            ordersCallback = new CallBackOrders(client, provider);
         }
 
         #region PrivateHandlers
@@ -41,6 +47,10 @@ namespace KopterBot.Bot
                 await client.SendTextMessageAsync(chatIdCreater, "Подключение установлено");
                 await client.SendTextMessageAsync(chatid, "Подключение установлено");
                 return;
+            }
+            if(callback.CallbackQuery.Data == "Next" || callback.CallbackQuery.Data == "Back")
+            {
+                await ordersCallback.ShowOrdersCallBack(callback);
             }
         }
     }

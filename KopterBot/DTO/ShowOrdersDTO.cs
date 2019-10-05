@@ -14,5 +14,6 @@ namespace KopterBot.DTO
         [ForeignKey("UserDTO")]
         public long ChatId { get; set; }
         public int CurrentProductId { get; set; }
+        public int MessageId { get; set; }
     }
 }
