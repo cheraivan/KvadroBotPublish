@@ -15,10 +15,35 @@ namespace KopterBot.PilotCommands
         public ShowOrders(TelegramBotClient client,MainProvider provider) : base(client, provider) { }
 
 
-        public async Task ShowAllOrders(long chatid, MessageEventArgs messageObject)
+        public async Task ShowAllOrders(long chatid, MessageEventArgs messageObject, bool isBuisnessman = false)
         {
-            int currentStep = await provider.userService.GetCurrentActionStep(chatid);
-            int countTask = await provider.buisnessTaskService.CountTask();
+            int countTask;
+            BuisnessTaskDTO task;
+            string message;
+            // для бизнесменов 
+            if (isBuisnessman)
+            {
+                countTask = await provider.buisnessTaskService.CountTask(chatid);
+                if(countTask == 0)
+                {
+                    await client.SendTextMessageAsync(chatid,"Вы не создали ниодной задачи");
+                }
+                task = await provider.buisnessTaskService.GetFirstElement();
+                message = $"Заявка номер: {task.Id} \n" +
+                   $"Регион: {task.Region} \n" +
+                   $"Описание: {task.Description} \n" +
+                   $"Сумма: {task.Sum}";
+
+                if (countTask == 1)
+                {
+                    await client.SendTextMessageAsync(chatid, message);
+                    return;
+                }
+                await provider.showOrderService.SetDefaultProduct(chatid);
+                await provider.showOrderService.ChangeMessageId(chatid, messageObject.Message.MessageId);
+                return;
+            }
+            countTask = await provider.buisnessTaskService.CountTask();
 
             if (countTask == 0)
             {
@@ -27,8 +52,8 @@ namespace KopterBot.PilotCommands
                 await provider.userService.ChangeAction(chatid, "NULL", 0);
                 return;
             }
-            BuisnessTaskDTO task = await provider.buisnessTaskService.GetFirstElement();
-            string message = $"Заявка номер: {task.Id} \n" +
+            task = await provider.buisnessTaskService.GetFirstElement();
+            message = $"Заявка номер: {task.Id} \n" +
                $"Регион: {task.Region} \n" +
                $"Описание: {task.Description} \n" +
                $"Сумма: {task.Sum}";

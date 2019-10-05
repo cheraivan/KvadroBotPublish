@@ -1,6 +1,7 @@
 ﻿using KopterBot.Base.BaseClass;
 using KopterBot.Bot;
 using KopterBot.DTO;
+using System;
 using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Args;
@@ -15,6 +16,14 @@ namespace KopterBot.PilotCommands
         public async Task ShowOrdersCallBack(CallbackQueryEventArgs callback)
         {
             long chatid = callback.CallbackQuery.Message.Chat.Id;
+
+            if(callback.CallbackQuery.Data == "RequestTask")
+            {
+                UserDTO user = await provider.userService.FindById(chatid);
+                if (user == null)
+                    throw new Exception("User cannot be null");
+            }
+
             if(callback.CallbackQuery.Data == "Next")
             {
                 BuisnessTaskDTO task = await provider.showOrderService.GetNextProduct(chatid);

@@ -18,12 +18,18 @@ namespace KopterBot.Services
             await buisnessTaskRepository.Update(task);
         }
 
+        public async ValueTask<int> CountTask(long chatid) =>
+            await buisnessTaskRepository.Get().Where(i => i.ChatId == chatid).CountAsync();
+
+
         public async ValueTask<BuisnessTaskDTO> GetFirstElement() =>
             await buisnessTaskRepository.Get().FirstOrDefaultAsync();
+        public async ValueTask<BuisnessTaskDTO> GetFirstElement(long chatid) =>
+            await buisnessTaskRepository.Get().FirstOrDefaultAsync(i => i.ChatId == chatid);
 
         public async ValueTask<BuisnessTaskDTO> FindTask(long chatid)
         {
-            return buisnessTaskRepository.Get().FirstOrDefault(i => i.ChatId == chatid);
+            return await buisnessTaskRepository.Get().FirstOrDefaultAsync(i => i.ChatId == chatid);
         }
         public async Task Create(BuisnessTaskDTO task)
         {
