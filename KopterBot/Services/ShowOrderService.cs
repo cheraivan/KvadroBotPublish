@@ -12,6 +12,21 @@ namespace KopterBot.Services
     class ShowOrderService:RepositoryProvider
     {
         // важно сделать проверку если элемент всего один
+        public async ValueTask<ShowOrdersDTO> CurrentProductId(long chatid)
+        {
+           return  await showOrdersRepository.Get().Where(i => i.ChatId == chatid).FirstOrDefaultAsync();
+        }
+
+        public async ValueTask<List<int>> GetIdTasksForUser(long chatid)
+        {
+            List<int> result = new List<int>();
+            await buisnessTaskRepository.Get().Where(i => i.ChatId == chatid).ForEachAsync((item) =>
+            {
+                result.Add(item.Id);
+            });
+            return result;
+        }
+
         private async ValueTask<int> ProductWhithMinId(long chatid,bool isBuisnessman) // for max
         {
             int min;
@@ -36,7 +51,6 @@ namespace KopterBot.Services
                     ChatId = chatid
                 };
                 await showOrdersRepository.Create(order);
-
             }
             return order.MessageId;
         }
@@ -85,7 +99,7 @@ namespace KopterBot.Services
                 await showOrdersRepository.Update(order);
                 return task;
             }
-            idPreviousProduct = await PreviousProduct(chatid, messageId,true);
+            idPreviousProduct = await PreviousProduct(chatid, messageId);
             task = await buisnessTaskRepository.Get().FirstOrDefaultAsync(i => i.Id == idPreviousProduct);
             if (task == null)
                 return null;
@@ -139,7 +153,12 @@ namespace KopterBot.Services
             }
             order = await showOrdersRepository.Get().FirstOrDefaultAsync(i => i.ChatId == chatid);
             if (order == null)
-                throw new Exception("order cannot be null");
+            {
+                order = new ShowOrdersDTO();
+                order.ChatId = chatid;
+                order.CurrentProductId = await buisnessTaskRepository.MinId();
+                await showOrdersRepository.Create(order);
+            }
             order.CurrentProductId = await buisnessTaskRepository.MinId();
             await showOrdersRepository.Update(order);
         }
@@ -192,7 +211,7 @@ namespace KopterBot.Services
             }
             if (min == order.Id)
                 return null;
-            currIdProduct = order.Id;
+            currIdProduct = order.CurrentProductId;
             result = await buisnessTaskRepository.Get().FirstOrDefaultAsync(i => i.Id < currIdProduct);
             return result.Id;
         }

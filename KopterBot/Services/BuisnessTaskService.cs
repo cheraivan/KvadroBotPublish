@@ -2,6 +2,7 @@
 using KopterBot.Repository;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -26,6 +27,9 @@ namespace KopterBot.Services
             await buisnessTaskRepository.Get().FirstOrDefaultAsync();
         public async ValueTask<BuisnessTaskDTO> GetFirstElement(long chatid) =>
             await buisnessTaskRepository.Get().FirstOrDefaultAsync(i => i.ChatId == chatid);
+
+        public async ValueTask<BuisnessTaskDTO> FindTaskByTaskId(int id) =>
+            await buisnessTaskRepository.Get().FirstOrDefaultAsync(i => i.Id == id);
 
         public async ValueTask<BuisnessTaskDTO> FindTask(long chatid)
         {

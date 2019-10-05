@@ -209,7 +209,7 @@ namespace KopterBot.Bot
             {
                 await showOrders.ShowAllOrders(chatid, message, true);
             }
-
+           
             if (action!=null)
             {
                 if(action == "Платная регистрация со страховкой")

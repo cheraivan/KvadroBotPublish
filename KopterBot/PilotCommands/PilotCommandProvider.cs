@@ -12,7 +12,7 @@ namespace KopterBot.PilotCommands
 
         private RegistrationPilotCommand _registrationCommand;
         private ShowOrders _showOrders;
-
+        private RequestOfferCallBack _requestOffer;
         public RegistrationPilotCommand registrationCommand
         {
             get
@@ -30,6 +30,16 @@ namespace KopterBot.PilotCommands
                 if (_showOrders == null)
                     _showOrders = new ShowOrders(client, provider);
                 return _showOrders;
+            }
+        }
+        
+        public RequestOfferCallBack requestOffer
+        {
+            get
+            {
+                if (_requestOffer == null)
+                    _requestOffer = new RequestOfferCallBack(client,provider);
+                return _requestOffer;
             }
         }
     }
