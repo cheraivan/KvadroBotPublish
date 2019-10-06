@@ -67,7 +67,7 @@ namespace KopterBot.Bot
                 user.Phone = message;
                 user.BuisnesPrivilag = 1;
                 await provider.userService.Update(user);
-                await client.SendTextMessageAsync(chatid, "Вы успешно зарегистрировались");
+                await client.SendTextMessageAsync(chatid, "Вы успешно зарегистрировались", 0, false, false,0,KeyBoardHandler.Murkup_BuisnessmanMenu()); 
                 await provider.managerPush.SendMessage(client, chatid);
                 return;
             }
@@ -124,6 +124,7 @@ namespace KopterBot.Bot
                 {
                     await client.SendTextMessageAsync(chatid, "Вы зашли как пилот",
                         0, false, false, 0, KeyBoardHandler.ChangeKeyBoardPilot(user.PilotPrivilag));
+                    return;
                 }
             }
             if (messageText == "Полный функционал платно")
@@ -134,6 +135,7 @@ namespace KopterBot.Bot
             {
                 await client.SendTextMessageAsync(chatid, "Есть несоклько вариантов регистрации",
                     0, false, false, 0, KeyBoardHandler.Murkup_Start_Pilot_UnBuyer_Mode());
+                return;
             }
             #region Платная регистрация для пилота
             if (messageText == "Со страхованием")
@@ -146,6 +148,7 @@ namespace KopterBot.Bot
             {
                 await provider.userService.ChangeAction(chatid, "Без страховки", 1);
                 await client.SendTextMessageAsync(chatid, "Введите ФИО", 0, false, false, 0, KeyBoardHandler.Markup_Back_From_First_Action());
+                return;
             }
             if (messageText == "Платная регистрация со страховкой")
             {

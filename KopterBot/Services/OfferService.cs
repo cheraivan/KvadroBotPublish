@@ -15,11 +15,24 @@ namespace KopterBot.Services
         {
             if (offer == null)
                 throw new Exception("offer cannot be null");
-            int count = await offerRepository.Get().Where(i => i.ChatId == chatid).CountAsync();
+            int count = await offerRepository.Get().Where(i => i.TaskId == offer.TaskId && i.ChatId == chatid).CountAsync();
             if(count == 0)
             {
                 await offerRepository.Create(offer);
             }
+        }
+        public async ValueTask<List<UserDTO>> GetUsersOffer(int id)// id продукта , переспросить насчет запроса
+        {
+            List<long> lstOfChatIds = await offerRepository.Get().Where(i => i.TaskId == id)
+                .Select(p => p.ChatId)
+                .ToListAsync();
+            List<UserDTO> result = new List<UserDTO>();
+            foreach(var i in lstOfChatIds)
+            {
+                UserDTO user = await userRepository.FindById(i);
+                result.Add(user);
+            }
+            return result;
         }
     }
 }

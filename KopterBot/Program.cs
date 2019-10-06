@@ -24,7 +24,7 @@ namespace KopterBot
         {
               Console.WriteLine("Введите 1 чтобы запустить бота");
               Console.WriteLine("Введите 2 чтобы получить логи пользователя");
-             if (Convert.ToInt32(Console.ReadLine()) == 1)
+            if (Convert.ToInt32(Console.ReadLine()) == 1)
               {
                   Console.WriteLine("server running");
                   StartBot bot = new StartBot();

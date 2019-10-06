@@ -12,9 +12,9 @@ namespace KopterBot.Services
     class ShowOrderService:RepositoryProvider
     {
         // важно сделать проверку если элемент всего один
-        public async ValueTask<ShowOrdersDTO> CurrentProductId(long chatid)
+        public async ValueTask<ShowOrdersDTO> CurrentProduct(long chatid)
         {
-           return  await showOrdersRepository.Get().Where(i => i.ChatId == chatid).FirstOrDefaultAsync();
+            return  await showOrdersRepository.Get().Where(i => i.ChatId == chatid).FirstOrDefaultAsync();
         }
 
         public async ValueTask<List<int>> GetIdTasksForUser(long chatid)

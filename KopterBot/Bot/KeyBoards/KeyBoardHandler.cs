@@ -254,6 +254,17 @@ namespace KopterBot.Bot
                });
             return keyboard;
         }
+        public static IReplyMarkup InviteUserToDialog()
+        {
+            return new InlineKeyboardMarkup(new InlineKeyboardButton[][]
+           {
+                new[]
+                {
+                    new InlineKeyboardButton(){Text = "Начать диалог" , CallbackData="StartDialog"}
+                }
+           });
+        }
+
         public static IReplyMarkup CallBackShowOrdersForBuisnessman()
         {
             return new InlineKeyboardMarkup(new InlineKeyboardButton[][]

@@ -17,7 +17,7 @@ namespace KopterBot.PilotCommands
         {
             long chatid = callback.CallbackQuery.Message.Chat.Id;
 
-            ShowOrdersDTO order = await provider.showOrderService.CurrentProductId(chatid);
+            ShowOrdersDTO order = await provider.showOrderService.CurrentProduct(chatid);
 
             List<int> idProducts = await provider.showOrderService.GetIdTasksForUser(chatid);
             if(idProducts.Contains(order.CurrentProductId))
@@ -28,7 +28,6 @@ namespace KopterBot.PilotCommands
 
             BuisnessTaskDTO task = await provider.buisnessTaskService.FindTaskByTaskId(order.CurrentProductId);
 
-             
             OfferDTO offer = new OfferDTO
             {
                 ChatId = chatid,

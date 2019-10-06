@@ -19,6 +19,12 @@ namespace KopterBot.Services
             await buisnessTaskRepository.Update(task);
         }
 
+        public async ValueTask<BuisnessTaskDTO> GetCurrentTask(long chatid)
+        {
+            ShowOrdersDTO order = await showOrdersRepository.Get().FirstOrDefaultAsync(i => i.ChatId == chatid);
+            return await buisnessTaskRepository.Get().FirstOrDefaultAsync(i => i.Id == order.CurrentProductId);
+        }
+
         public async ValueTask<int> CountTask(long chatid) =>
             await buisnessTaskRepository.Get().Where(i => i.ChatId == chatid).CountAsync();
 

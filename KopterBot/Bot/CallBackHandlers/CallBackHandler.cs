@@ -1,5 +1,6 @@
 ﻿using KopterBot.Base.BaseClass;
 using KopterBot.BuisnessCommand.CallBacks;
+using KopterBot.Chat.CallBack;
 using KopterBot.DTO;
 using KopterBot.Interfaces;
 using KopterBot.PilotCommands;
@@ -25,6 +26,7 @@ namespace KopterBot.Bot
         CallBackOrders ordersCallback;
         RequestOfferCallBack offerCallback;
         ShowMyOffersCallBack myOffersCallback;
+        StartDialogCallBack startDialogCallBack;
         public CallBackHandler(TelegramBotClient client,MainProvider provider)
         {
             this.provider = provider;
@@ -32,6 +34,7 @@ namespace KopterBot.Bot
             ordersCallback = new CallBackOrders(client, provider);
             offerCallback = new RequestOfferCallBack(client, provider);
             myOffersCallback = new ShowMyOffersCallBack(client, provider);
+            startDialogCallBack = new StartDialogCallBack(client, provider);
         }
 
 
@@ -71,6 +74,14 @@ namespace KopterBot.Bot
             if (callback.CallbackQuery.Data == "RequestData")
             {
                 await myOffersCallback.ShowOffersCallBack(callback);
+            }
+            if(callback.CallbackQuery.Data == "StartDialog")
+            {
+                await startDialogCallBack.SendCallBack(callback);
+            }
+            if(callback.CallbackQuery.Data == "confirm")
+            {
+
             }
         }
     }
