@@ -44,6 +44,7 @@ namespace KopterBot.Bot
             registrationPilotsCommand = new RegistrationPilotCommand(client,provider);
             showOrders = new ShowOrders(client, provider);
         }
+
         #region BuisnessRegistration
         private async Task CommandHandler_BuisnessRegistrationKorporativ(long chatid,string message,MessageEventArgs messageObject)
         {
@@ -72,6 +73,7 @@ namespace KopterBot.Bot
                 return;
             }
         }
+
         #endregion
         private async Task CommandHandler_Start(long chatid)
         {
@@ -90,6 +92,24 @@ namespace KopterBot.Bot
           //  await UserLogs.WriteLog(chatid, messageText);
 
             bool isRegistration = await provider.userService.IsUserRegistration(chatid);
+
+            if(messageText == "Закончить диалог")
+            {
+                return;
+            }
+
+            if (await provider.hubService.IsChatActive(chatid))
+            {
+                long[] arrChatid = await provider.hubService.GetChatId(chatid);
+
+                long chatIdRecive = arrChatid[0] == chatid ? arrChatid[1] : arrChatid[0];
+                await client.SendTextMessageAsync(chatIdRecive, messageText);
+
+                return;
+            }
+
+
+
             if (messageText == "Назад")
             {
                 await provider.userService.ChangeAction(chatid, "NULL", 0);

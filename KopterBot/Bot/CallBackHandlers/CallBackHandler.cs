@@ -49,16 +49,7 @@ namespace KopterBot.Bot
         public async Task BaseCallBackHandler(CallbackQueryEventArgs callback)
         {
             long chatid = callback.CallbackQuery.Message.Chat.Id; // receiver
-            if (callback.CallbackQuery.Data == "confirm")
-            {
-                await CallBackHandler_Confirm(chatid);
-                HubDTO hub = await hubRepository.Get().FirstOrDefaultAsync(i => i.ChatIdReceiver == chatid);
-               
-                long chatIdCreater = hub.ChatIdCreater;
-                await client.SendTextMessageAsync(chatIdCreater, "Подключение установлено");
-                await client.SendTextMessageAsync(chatid, "Подключение установлено");
-                return;
-            }
+           
             if (callback.CallbackQuery.Data == "Next" || callback.CallbackQuery.Data == "Back")
             {
                 await ordersCallback.ShowOrdersCallBack(callback);
@@ -81,7 +72,7 @@ namespace KopterBot.Bot
             }
             if(callback.CallbackQuery.Data == "confirm")
             {
-
+                await startDialogCallBack.StartCommenication(callback);
             }
         }
     }

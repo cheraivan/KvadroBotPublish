@@ -12,12 +12,9 @@ namespace KopterBot.Chat.CallBack
 {
     class StartDialogCallBack:BaseCallback
     {
-        HubsHandler hub;
         public StartDialogCallBack(TelegramBotClient client,MainProvider provider) : base(client, provider)
         {
-            hub = new HubsHandler();
         }
-
         public async override Task SendCallBack(CallbackQueryEventArgs callback)
         {
             long chatid = callback.CallbackQuery.Message.Chat.Id;
@@ -39,15 +36,30 @@ namespace KopterBot.Chat.CallBack
 
             BuisnessTaskDTO task = await provider.buisnessTaskService.GetCurrentTask(chatid);
             
+            // проверка пилот в диалоге
+
             string messageAnswer = $"{user.FIO} хочет с вами связаться \n " +
                 $"Заявка в регионе {task.Region} \n" +
                 $"Описание заявки: {task.Description} ";
-            await client.SendTextMessageAsync(id, messageAnswer, 0, false, false, 0,KeyBoardHandler.ChatConfirm());
+            // попытка установки соеденения 
+            await provider.hubService.CreateDialog(chatid, chatIdReceiver);
+            await client.SendTextMessageAsync(chatIdReceiver, messageAnswer, 0, false, false, 0,KeyBoardHandler.ChatConfirm());
         }
 
         public async Task StartCommenication(CallbackQueryEventArgs callback)
         {
+            long chatid = callback.CallbackQuery.Message.Chat.Id;
 
+            long[] chatIds = await provider.hubService.GetChatId(chatid);
+
+            if (chatIds.Length == 0)
+                throw new Exception("Dialog is incorrect");
+
+            await provider.hubService.ConfirmDialog(chatid,chatIds[1],true);
+
+            await client.SendTextMessageAsync(chatIds[1], "Подключение установлено", 0, false, false, 0, KeyBoardHandler.EndDialog());
+            await client.SendTextMessageAsync(chatid, "Подключение установлено", 0, false, false, 0, KeyBoardHandler.EndDialog());
         }
+
     }
 }

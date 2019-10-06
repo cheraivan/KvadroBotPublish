@@ -7,6 +7,19 @@ namespace KopterBot.Bot
 {
     class KeyBoardHandler
     {
+        public static IReplyMarkup EndDialog()
+        {
+            return new ReplyKeyboardMarkup
+            {
+                Keyboard = new[] {
+                new[]
+                {
+                    new KeyboardButton("Закончить диалог")
+                },
+                },
+                ResizeKeyboard = true
+            };
+        }
         public static IReplyMarkup PilotWithoutSubscribe_Murkup()
         {
             return new ReplyKeyboardMarkup

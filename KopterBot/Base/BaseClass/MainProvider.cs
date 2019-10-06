@@ -13,7 +13,6 @@ namespace KopterBot.Base.BaseClass
     class MainProvider:ServiceProvider
     {
         private AdminsPush _adminPush;
-        private HubsHandler _hubsHandler;
         private CountProposeHandler _proposeHandler;
         private ManagerPush _managerPush;
         public ManagerPush managerPush
@@ -27,15 +26,7 @@ namespace KopterBot.Base.BaseClass
         }
         protected CommandProvider _commandProvider;
 
-        public HubsHandler hubsHandler
-        {
-            get
-            {
-                if (_hubsHandler == null)
-                    _hubsHandler = new HubsHandler();
-                return _hubsHandler;
-            }
-        }
+      
         public CountProposeHandler proposeHandler
         {
             get
