@@ -45,14 +45,6 @@ namespace KopterBot.Base.BaseClass
                 return _adminPush;
             }
         }
-        public CommandProvider commandProvider
-        {
-            get
-            {
-                if (_commandProvider == null)
-                    _commandProvider = new CommandProvider();
-                return _commandProvider;
-            }
-        }
+       
     }
 }

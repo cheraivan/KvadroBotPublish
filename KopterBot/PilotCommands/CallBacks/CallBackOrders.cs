@@ -55,7 +55,7 @@ namespace KopterBot.PilotCommands
             {
                 UserDTO user = await provider.userService.FindById(chatid);
                 if (user == null)
-                    throw new Exception("User cannot be null");
+                    throw new System.Exception("User cannot be null");
             }
 
             if(callback.CallbackQuery.Data == "Next")
@@ -79,6 +79,7 @@ namespace KopterBot.PilotCommands
                 if(task == null)
                 {
                     await client.SendTextMessageAsync(chatid, "Это первая задача");
+                    return;
                 }
                 int messageId = await provider.showOrderService.GetMessageId(chatid);
                 string message = $"Заявка номер: {task.Id} \n" +

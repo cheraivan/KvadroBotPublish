@@ -1,4 +1,5 @@
 ﻿using KopterBot.DTO;
+using KopterBot.Exception;
 using KopterBot.Repository;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -12,6 +13,21 @@ namespace KopterBot.Services
         {
             HubDTO hub = await hubRepository.Get().FirstOrDefaultAsync(i => i.ChatIdCreater == chatid);
             return hub.ChatIdReceiver;
+        }
+        public async Task StopChat(long chatid)
+        {
+            HubDTO hub = await hubRepository.Get().FirstOrDefaultAsync(i => i.ChatIdCreater == chatid);
+            if(hub == null)
+            {
+                throw new System.Exception("Чата не существует");
+            }
+            HubDTO reletedHub = await hubRepository.Get().FirstOrDefaultAsync(i => i.ChatIdReceiver == chatid);
+            if(reletedHub == null)
+            {
+                throw new System.Exception("Чата не существует");
+            }
+            await hubRepository.Delete(hub);
+            await hubRepository.Delete(reletedHub);
         }
         public async ValueTask<long[]> GetChatId(long chatid)
         {
@@ -30,7 +46,7 @@ namespace KopterBot.Services
                 return false;
             }
 
-            IEnumerable<HubDTO> hubs = await hubRepository.Get(i => i.ChatIdCreater == hub1.ChatIdReceiver);
+            HubDTO hubs = await hubRepository.Get().FirstOrDefaultAsync(i => i.ChatIdCreater == hub1.ChatIdReceiver);
             return hubs == null ? false : true;
         }
 
@@ -47,6 +63,20 @@ namespace KopterBot.Services
                 HubDTO hub = await hubRepository.Get().FirstOrDefaultAsync(i => i.ChatIdCreater == CreaterChatId);
                 await hubRepository.Delete(hub);
             }
+        }
+
+        public async ValueTask<bool> PilotInDialog(long chatid)
+        {
+            HubDTO hub = await hubRepository.Get().FirstOrDefaultAsync(i => i.ChatIdCreater == chatid);
+
+            if (hub == null)
+                return false;
+
+            HubDTO reletedHub = await hubRepository.Get().FirstOrDefaultAsync(i => i.ChatIdReceiver == chatid);
+            if (reletedHub == null)
+                return false;
+
+            return true;
         }
 
         public async Task CreateDialog(long CreaterChatId, long ReceiverChatId)

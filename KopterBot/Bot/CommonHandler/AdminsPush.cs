@@ -13,13 +13,13 @@ using Telegram.Bot;
 namespace KopterBot.Bot.CommonHandler
 {
     class AdminsPush
-    {
+    { // есть базовая отправка уведомлений
         private CountProposeHandler propose;
         public AdminsPush()
         {
             propose = new CountProposeHandler();
         }
-        public async Task MessageRequisitionAsync(TelegramBotClient  client ,ServiceProvider provider,long chatid)
+        public async Task MessageAboutRegistrationPilot(TelegramBotClient  client ,ServiceProvider provider,long chatid)
         {
             int countAdmin = await provider.adminService.CountAdmins();
             if (countAdmin == 0)
@@ -34,9 +34,9 @@ namespace KopterBot.Bot.CommonHandler
            
 
             if (user == null)
-                throw new Exception("user is null");
+                throw new System.Exception("user is null");
 
-            string message = $"Номер заявки:{propose.GetCount()}\n" +
+            string message = $"Количество пилотов:{propose.GetCount()}\n" +
                 $"Пилот №{proposal.ChatId} зарегистрировался\n " +
                 $"ФИО:{user.FIO}\n " +
                 $"Номер телефона:{user.Phone}\n " +
@@ -44,10 +44,6 @@ namespace KopterBot.Bot.CommonHandler
                 $"Адрес доставки:{proposal.Adress}\n " +
                 $"Адрес определенный с геопозиции:{proposal.RealAdress}";
 
-            StorageDTO storage = new StorageDTO();
-            storage.Message = message;
-
-            await provider.storageService.Create(storage);
             foreach(long _chatid in admins)
             {
                await client.SendTextMessageAsync(_chatid, message);

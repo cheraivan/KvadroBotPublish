@@ -1,5 +1,6 @@
 ﻿using KopterBot.Base.BaseClass;
 using KopterBot.Bot;
+using KopterBot.Commons;
 using KopterBot.DTO;
 using KopterBot.Geolocate;
 using System;
@@ -21,6 +22,7 @@ namespace KopterBot.PilotCommands
             int currentStep = await provider.userService.GetCurrentActionStep(chatid);
             DronDTO dron = new DronDTO();
             ProposalDTO proposal = await provider.proposalService.FindById(chatid);
+
             if (currentStep == 1)
             {
                 user.FIO = message;
@@ -31,11 +33,18 @@ namespace KopterBot.PilotCommands
             }
             if (currentStep == 2)
             {
-                user.Phone = message;
-                await provider.userService.Update(user);
-                await provider.userService.ChangeAction(chatid, "Платная регистрация без страховки", ++currentStep);
-                await client.SendTextMessageAsync(chatid, "Введите марку дрона");
-                return;
+                if (RegularExpression.IsTelephoneCorrect(message))
+                {
+                    user.Phone = message;
+                    await provider.userService.Update(user);
+                    await provider.userService.ChangeAction(chatid, "Платная регистрация без страховки", ++currentStep);
+                    await client.SendTextMessageAsync(chatid, "Введите марку дрона");
+                    return;
+                }
+                else
+                {
+                    await client.SendTextMessageAsync(chatid, "Вы ввели некорректный телефон.Попробуйте еще раз");
+                }
             }
             if (currentStep == 3)
             {
@@ -66,7 +75,7 @@ namespace KopterBot.PilotCommands
                     await provider.proposeHandler.ChangeProposeCount();
                     user.PilotPrivilag = 1;
                     await provider.userService.Update(user);
-                    await provider.adminPush.MessageRequisitionAsync(client, provider, chatid);
+                    await provider.adminPush.MessageAboutRegistrationPilot(client, provider, chatid);
                 }
             }
         }
@@ -88,12 +97,20 @@ namespace KopterBot.PilotCommands
 
             if (currentStep == 2)
             {
-                await provider.proposalService.Create(user);
-                user.Phone = message;
-                await provider.userService.Update(user);
-                await provider.userService.ChangeAction(chatid, "Платная регистрация со страховкой", ++currentStep);
-                await client.SendTextMessageAsync(chatid, "Введите марку дрона");
-                return;
+                if (RegularExpression.IsTelephoneCorrect(message))
+                {
+                    await provider.proposalService.Create(user);
+                    user.Phone = message;
+                    await provider.userService.Update(user);
+                    await provider.userService.ChangeAction(chatid, "Платная регистрация со страховкой", ++currentStep);
+                    await client.SendTextMessageAsync(chatid, "Введите марку дрона");
+                    return;
+                }
+                else
+                {
+                    await client.SendTextMessageAsync(chatid, "Вы ввели некорректный телефон,попробуйте еще раз");
+                    return;
+                }
             }
             if (currentStep == 3)
             {
@@ -135,7 +152,7 @@ namespace KopterBot.PilotCommands
                     await provider.proposeHandler.ChangeProposeCount();
                     user.PilotPrivilag = 2;
                     await provider.userService.Update(user);
-                    await provider.adminPush.MessageRequisitionAsync(client, provider, chatid);
+                    await provider.adminPush.MessageAboutRegistrationPilot(client, provider, chatid);
                     // можно считать человека зарегистрированым только после оплаты , и определяем насколько он крут в плане полномочий
                     await client.SendTextMessageAsync(chatid, "Вы успешно зарегистрировались");
                 }

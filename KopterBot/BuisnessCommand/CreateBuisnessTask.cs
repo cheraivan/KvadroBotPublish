@@ -10,11 +10,11 @@ using Telegram.Bot.Args;
 
 namespace KopterBot.BuisnessCommand
 {
-    class BuisnessAction
+    class CreateBuisnessTask
     {
         TelegramBotClient client;
         MainProvider provider;
-        public BuisnessAction(MainProvider provider,TelegramBotClient client)
+        public CreateBuisnessTask(MainProvider provider,TelegramBotClient client)
         {
             this.provider = provider;
             this.client = client;

@@ -16,7 +16,7 @@ namespace KopterBot.Repository
         public override async Task Create(UserDTO user)
         {
             if (user.ChatId == 0)
-                throw new Exception("chat id cant be null");
+                throw new System.Exception("chat id cant be null");
             user.step = new StepDTO();
             //user.step.ChatId = user.ChatId;
             user.proposals = new List<ProposalDTO>();

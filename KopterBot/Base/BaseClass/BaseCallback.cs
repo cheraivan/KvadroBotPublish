@@ -20,7 +20,7 @@ namespace KopterBot.Base.BaseClass
         
         public virtual Task SendCallBack(CallbackQueryEventArgs callback)
         {
-            throw new Exception("This method has to be override");
+            throw new System.Exception("This method has to be override");
         }
     }
 }

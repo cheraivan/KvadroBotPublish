@@ -14,7 +14,7 @@ namespace KopterBot.Services
         public async Task Create(long chatid,OfferDTO offer)
         {
             if (offer == null)
-                throw new Exception("offer cannot be null");
+                throw new SystemException("offer cannot be null");
             int count = await offerRepository.Get().Where(i => i.TaskId == offer.TaskId && i.ChatId == chatid).CountAsync();
             if(count == 0)
             {

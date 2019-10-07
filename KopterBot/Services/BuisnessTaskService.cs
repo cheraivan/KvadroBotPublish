@@ -15,7 +15,7 @@ namespace KopterBot.Services
         public async Task Update(BuisnessTaskDTO task)
         {
             if (task == null)
-                throw new Exception("task cannot be null");
+                throw new System.Exception("task cannot be null");
             await buisnessTaskRepository.Update(task);
         }
 
@@ -44,7 +44,7 @@ namespace KopterBot.Services
         public async Task Create(BuisnessTaskDTO task)
         {
             if (task.ChatId == 0 || task.Region == null)
-                throw new Exception("Incorrect data");
+                throw new System.Exception("Incorrect data");
             await buisnessTaskRepository.Create(task);
         }
         public async ValueTask<bool> IsUserBuisnessman(long chatid)

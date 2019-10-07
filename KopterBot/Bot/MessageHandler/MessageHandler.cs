@@ -20,6 +20,7 @@ using KopterBot.Base.BaseClass;
 using KopterBot.Services;
 using KopterBot.BuisnessCommand;
 using KopterBot.PilotCommands;
+using KopterBot.Chat;
 
 namespace KopterBot.Bot
 {
@@ -32,17 +33,21 @@ namespace KopterBot.Bot
         TelegramBotClient client;
         MainProvider provider;
 
-        BuisnessAction buisnessAction;
+        CreateBuisnessTask buisnessAction;
         RegistrationPilotCommand registrationPilotsCommand;
         ShowOrders showOrders;
+
+        StopChat stopChat;
 
         public MessageHandler(TelegramBotClient client, MainProvider provider)
         {
             this.client = client;
             this.provider = provider;
-            buisnessAction = new BuisnessAction(provider, client);
+            buisnessAction = new CreateBuisnessTask(provider, client);
             registrationPilotsCommand = new RegistrationPilotCommand(client,provider);
             showOrders = new ShowOrders(client, provider);
+
+            stopChat = new StopChat(client, provider);
         }
 
         #region BuisnessRegistration
@@ -65,12 +70,19 @@ namespace KopterBot.Bot
 
             if(currentStep == 2)
             {
-                user.Phone = message;
-                user.BuisnesPrivilag = 1;
-                await provider.userService.Update(user);
-                await client.SendTextMessageAsync(chatid, "Вы успешно зарегистрировались", 0, false, false,0,KeyBoardHandler.Murkup_BuisnessmanMenu()); 
-                await provider.managerPush.SendMessage(client, chatid);
-                return;
+                if (RegularExpression.IsTelephoneCorrect(message))
+                {
+                    user.Phone = message;
+                    user.BuisnesPrivilag = 1;
+                    await provider.userService.Update(user);
+                    await client.SendTextMessageAsync(chatid, "Вы успешно зарегистрировались", 0, false, false, 0, KeyBoardHandler.Murkup_BuisnessmanMenu());
+                    await provider.managerPush.SendMessage(client, chatid);
+                    return;
+                }
+                else
+                {
+                    await client.SendTextMessageAsync(chatid, "Вы ввели некорректный телефон,попробуйте еще раз");
+                }
             }
         }
 
@@ -92,10 +104,10 @@ namespace KopterBot.Bot
           //  await UserLogs.WriteLog(chatid, messageText);
 
             bool isRegistration = await provider.userService.IsUserRegistration(chatid);
-
+           
             if(messageText == "Закончить диалог")
             {
-                return;
+                await stopChat.Request(chatid);
             }
 
             if (await provider.hubService.IsChatActive(chatid))
@@ -132,6 +144,12 @@ namespace KopterBot.Bot
                 await client.SendTextMessageAsync(chatid, "Вы уже зарегестрированы", 0, false, false, 0, KeyBoardHandler.Murkup_BuisnessmanMenu());
                 return;
             }
+
+            if(messageText == "Хочу лететь здесь и сейчас")
+            {
+
+            }
+
             if (messageText == "Пилот")
             {
                 if (user.PilotPrivilag == 0)

@@ -30,13 +30,19 @@ namespace KopterBot.Chat.CallBack
             
             long chatIdReceiver;
             if (!long.TryParse(id, out chatIdReceiver))
-                throw new Exception("Incorrect parse");
+                throw new System.Exception("Incorrect parse");
 
             UserDTO user = await provider.userService.FindById(chatid);
 
             BuisnessTaskDTO task = await provider.buisnessTaskService.GetCurrentTask(chatid);
             
             // проверка пилот в диалоге
+
+            if(await provider.hubService.PilotInDialog(chatIdReceiver))
+            {
+                await client.SendTextMessageAsync(chatid, "Пилот в диалоге");
+            }
+
 
             string messageAnswer = $"{user.FIO} хочет с вами связаться \n " +
                 $"Заявка в регионе {task.Region} \n" +
@@ -48,16 +54,19 @@ namespace KopterBot.Chat.CallBack
 
         public async Task StartCommenication(CallbackQueryEventArgs callback)
         {
+            // кто шлёт каллбек получатель по умолчанию
             long chatid = callback.CallbackQuery.Message.Chat.Id;
 
             long[] chatIds = await provider.hubService.GetChatId(chatid);
 
+            long chatIdReceiver = chatIds[0];
+
             if (chatIds.Length == 0)
-                throw new Exception("Dialog is incorrect");
+                throw new System.Exception("Dialog is incorrect");
 
-            await provider.hubService.ConfirmDialog(chatid,chatIds[1],true);
+            await provider.hubService.ConfirmDialog(chatIdReceiver, chatid, true);
 
-            await client.SendTextMessageAsync(chatIds[1], "Подключение установлено", 0, false, false, 0, KeyBoardHandler.EndDialog());
+            await client.SendTextMessageAsync(chatIdReceiver, "Подключение установлено", 0, false, false, 0, KeyBoardHandler.EndDialog());
             await client.SendTextMessageAsync(chatid, "Подключение установлено", 0, false, false, 0, KeyBoardHandler.EndDialog());
         }
 

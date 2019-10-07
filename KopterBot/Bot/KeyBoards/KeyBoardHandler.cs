@@ -250,7 +250,7 @@ namespace KopterBot.Bot
                 return PilotWithoutSubscribe_Murkup();
             if (privilagie == 2)
                 return PilotWithSubscribe_Murkup();
-            throw new Exception("incorrect value");
+            throw new System.Exception("incorrect value");
         }
         public static IReplyMarkup ChatConfirm()
         {

@@ -25,7 +25,7 @@ namespace KopterBot.Commons
         protected void CheckNullable(object o)
         {
             if (o is null)
-                throw new Exception("value is null");
+                throw new System.Exception("value is null");
         }
     }
     class GeolocateRequest:BaseRequest
@@ -68,7 +68,7 @@ namespace KopterBot.Commons
             }
             else
             {
-                throw new Exception("Incorrect format");
+                throw new System.Exception("Incorrect format");
             }
         }
     }

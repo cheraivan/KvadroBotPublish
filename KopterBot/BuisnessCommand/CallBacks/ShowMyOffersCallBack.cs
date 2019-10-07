@@ -24,7 +24,7 @@ namespace KopterBot.BuisnessCommand.CallBacks
             BuisnessTaskDTO task = await provider.buisnessTaskService.FindTaskByTaskId(currProductId);
 
             if (task == null)
-                throw new Exception("task cannot be null");
+                throw new System.Exception("task cannot be null");
 
             List<UserDTO> offers = await provider.offerService.GetUsersOffer(currProductId);
 

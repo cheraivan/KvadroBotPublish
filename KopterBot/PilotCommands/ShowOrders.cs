@@ -29,16 +29,13 @@ namespace KopterBot.PilotCommands
                     await client.SendTextMessageAsync(chatid,"Вы не создали ниодной задачи");
                 }
                 task = await provider.buisnessTaskService.GetFirstElement(chatid);
+
                 message = $"Заявка номер: {task.Id} \n" +
                    $"Регион: {task.Region} \n" +
                    $"Описание: {task.Description} \n" +
                    $"Сумма: {task.Sum}";
 
-                if (countTask == 1)
-                {
-                    await client.SendTextMessageAsync(chatid, message);
-                    return;
-                }
+  
                 await provider.showOrderService.SetDefaultProduct(chatid,true);
                 await provider.showOrderService.ChangeMessageId(chatid, messageObject.Message.MessageId);
                 await client.SendTextMessageAsync(chatid, message, 0, false, false, 0, KeyBoardHandler.CallBackShowOrdersForBuisnessman());
@@ -59,11 +56,7 @@ namespace KopterBot.PilotCommands
                $"Описание: {task.Description} \n" +
                $"Сумма: {task.Sum}";
 
-            if (countTask == 1)
-            {
-                await client.SendTextMessageAsync(chatid, message);
-                return;
-            }
+           
             await provider.showOrderService.SetDefaultProduct(chatid);
             await provider.showOrderService.ChangeMessageId(chatid, messageObject.Message.MessageId);
             await client.SendTextMessageAsync(chatid, message, 0, false, false, 0, KeyBoardHandler.CallBackShowOrders());

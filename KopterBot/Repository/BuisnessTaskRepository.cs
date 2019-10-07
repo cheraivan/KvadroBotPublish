@@ -16,7 +16,7 @@ namespace KopterBot.Repository
             if (isBuisnessman)
             {
                 if (chatid == null)
-                    throw new Exception("chatid cannot be null");
+                    throw new System.Exception("chatid cannot be null");
                 return await db.buisnessTasks.Where(i => i.ChatId == chatid).Select(i=>i.Id).ToListAsync();
             }
             return await db.buisnessTasks.Select(i => i.Id).ToListAsync();
