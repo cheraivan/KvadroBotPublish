@@ -147,7 +147,8 @@ namespace KopterBot.Bot
 
             if(messageText == "Хочу лететь здесь и сейчас")
             {
-
+                await provider.userService.ChangeAction(chatid, "Хочу лететь здесь и сейчас", 1);
+                await client.SendTextMessageAsync(chatid, "Сбросьте вашу геолокацию");
             }
 
             if (messageText == "Пилот")

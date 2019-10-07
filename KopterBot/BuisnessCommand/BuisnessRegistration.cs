@@ -1,4 +1,5 @@
 ﻿using KopterBot.Base.BaseClass;
+using KopterBot.Bot;
 using KopterBot.Commons;
 using KopterBot.DTO;
 using System;

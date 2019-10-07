@@ -9,6 +9,7 @@ namespace KopterBot.Geolocate
 {
     class GeolocateHandler
     {
+
         public async static ValueTask<string> GetAddressFromCordinat(float? longtitude,float? latitude)
         {
             GeolocateRequest request = new GeolocateRequest(longtitude, latitude);
@@ -23,7 +24,6 @@ namespace KopterBot.Geolocate
                 result += responseFromServer[i];
             return result;
         }
-
         public static string GetRestrictedAreas(float? longtitude,float? latitude) // ВАЖНО,КООРДИНАТЫ НАОБОРОТ ПЕРЕДАЮТСЯ
         { 
             string url =$"https://www.google.com/maps/d/u/0/viewer?mid=15zGpRn3es7trUwiS6rQnk_5UVLcJWtqd&hl=en&ll={latitude}%2C{longtitude}&z=12";
