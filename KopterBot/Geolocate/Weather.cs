@@ -9,17 +9,23 @@ namespace KopterBot.Geolocate
 {
     class Weather
     {
-        public async static ValueTask<string> GetGeolocation(float longtitude,float lautitude)
+     /*   public async static ValueTask<string> GetWeather(float longtitude,float lautitude)
         {
-            WebRequest request = WebRequest.Create(Commons.Constant.WheterURL+$"lat={lautitude}&lon={longtitude}" + Commons.Constant.APIKEY);
+            string url = Commons.Constant.WhertherURL + $"lat={lautitude}&lon={longtitude}" + Commons.Constant.WheatherAPIKey;
+            WebRequest request = WebRequest.Create(url);
             WebResponse response = await request.GetResponseAsync();
+            string result = "";
             using (Stream stream = response.GetResponseStream())
             {
                 using (StreamReader reader = new StreamReader(stream))
                 {
-                    return await reader.ReadToEndAsync();
+                    result = await reader.ReadToEndAsync();
                 }
             }
-        }
+
+
+
+            return url;
+        }*/
     }
 }

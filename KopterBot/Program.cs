@@ -2,6 +2,7 @@
 using KopterBot.Commons;
 using KopterBot.Geolocate;
 using KopterBot.Logs;
+using KopterBot.Payment;
 using System;
 using System.Linq;
 
@@ -18,11 +19,11 @@ namespace KopterBot
         }
         static async void T()
         { 
-            Console.WriteLine(await Weather.GetGeolocation((float)36.30306, (float)49.95094));
+           // Console.WriteLine(await EasyPay.IsPayCorrect("704380964")); 
         }
         static void Main(string[] args)
         {
-            T();
+           //   T();
               Console.WriteLine("Введите 1 чтобы запустить бота");
               Console.WriteLine("Введите 2 чтобы получить логи пользователя");
             if (Convert.ToInt32(Console.ReadLine()) == 1)
