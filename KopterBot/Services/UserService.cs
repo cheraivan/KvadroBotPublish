@@ -2,6 +2,7 @@
 using KopterBot.Repository;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,6 +20,45 @@ namespace KopterBot.Services
         {
             return await userRepository.FindById(chatid);
         }
+
+        public async ValueTask<List<UserDTO>> GetUsersById(long chatid)
+        {
+            List<long> usersid = await GetUsersIdByRegion(chatid);
+            if (usersid.Count == 0)
+                return null;
+
+            List<UserDTO> result = new List<UserDTO>();
+
+            foreach(var i in usersid)
+            {
+                UserDTO user = await userRepository.FindById(i);
+                result.Add(user);
+            }
+            return result;
+        }
+
+        public async ValueTask<List<long>> GetUsersIdByRegion(long chatid)
+        {
+            List<long> result = new List<long>();
+            ProposalDTO proposal = await proposalRepository.Get().FirstOrDefaultAsync(i => i.ChatId == chatid);
+            string region = "";
+            if(proposal != null)
+            {
+                if(proposal.RealAdress != null)
+                {
+                    int index = proposal.RealAdress.IndexOf(",")+2;
+                    int lastindex = proposal.RealAdress.IndexOf(",", index+1);
+
+                    for (int i = index; i < lastindex; i++)
+                        region += proposal.RealAdress[i];
+                }
+            }
+            result = await proposalRepository.Get().Where(i => i.RealAdress.IndexOf(region) != -1).
+                Select(p => p.ChatId)
+                .ToListAsync();
+            return result;
+        }
+
         public async Task Update(UserDTO user)
         {
              await userRepository.Update(user);

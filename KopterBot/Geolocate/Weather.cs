@@ -9,10 +9,10 @@ namespace KopterBot.Geolocate
 {
     class Weather
     {
-     /*   public async static ValueTask<string> GetWeather(float longtitude,float lautitude)
+        public async static ValueTask<string> GetWeather(float longtitude,float lautitude)
         {
-            string url = Commons.Constant.WhertherURL + $"lat={lautitude}&lon={longtitude}" + Commons.Constant.WheatherAPIKey;
-            WebRequest request = WebRequest.Create(url);
+            string url = Commons.Constant.WheterURL + $"lat={lautitude}&lon={longtitude}" + Commons.Constant.WheatherAPIKey;
+            WebRequest request = WebRequest.Create($"http://api.openweathermap.org/data/2.5/weather?q=Kiev,ua{Commons.Constant.WheatherAPIKey}&units=metric");
             WebResponse response = await request.GetResponseAsync();
             string result = "";
             using (Stream stream = response.GetResponseStream())
@@ -22,10 +22,7 @@ namespace KopterBot.Geolocate
                     result = await reader.ReadToEndAsync();
                 }
             }
-
-
-
-            return url;
-        }*/
+            return result;
+        }
     }
 }

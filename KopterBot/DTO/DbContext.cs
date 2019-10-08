@@ -21,7 +21,7 @@ namespace KopterBot.DTO
         public DbSet<ManagerDTO> Managers { get; set; }
         public DbSet<BuisnessTaskDTO> buisnessTasks { get; set; }
         public DbSet<OfferDTO> offers { get; set; }
-
+        public DbSet<SosDTO> sosTable { get; set; }
         public DbSet<ShowOrdersDTO> showOrdersDTO { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

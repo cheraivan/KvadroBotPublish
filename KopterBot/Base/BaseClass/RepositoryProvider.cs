@@ -16,6 +16,17 @@ namespace KopterBot.Repository
         private BuisnessTaskRepository _buisnessTaskRepository;
         private ShowOrdersRepository _showOrdersRepository;
         private OfferRepository _offerRepository;
+        private sosTableRepository _sosTableRepository;
+
+        protected sosTableRepository sosTableRepository
+        {
+            get
+            {
+                if (_sosTableRepository == null)
+                    _sosTableRepository = new sosTableRepository();
+                return _sosTableRepository;
+            }
+        }
 
         protected OfferRepository offerRepository
         {
