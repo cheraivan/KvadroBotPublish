@@ -39,6 +39,7 @@ namespace KopterBot.BuisnessCommand
                     user.Phone = message;
                     user.BuisnesPrivilag = 1;
                     await provider.userService.Update(user);
+                    await provider.userService.ChangeAction(chatid, "NULL", 0);
                     await client.SendTextMessageAsync(chatid, "Вы успешно зарегистрировались", 0, false, false, 0, KeyBoardHandler.Murkup_BuisnessmanMenu());
                     await provider.managerPush.SendMessage(client, chatid);
                     return;

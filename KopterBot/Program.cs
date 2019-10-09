@@ -5,6 +5,8 @@ using KopterBot.Logs;
 using KopterBot.Payment;
 using System;
 using System.Linq;
+using System.Net;
+using System.Net.Mail;
 
 namespace KopterBot
 {
@@ -19,19 +21,11 @@ namespace KopterBot
         }
         static async void T()
         {
-            string s = "Украина, Харьков, проспект Героев Сталинграда, 148В";
-            string newstr = "";
-            int index = s.IndexOf(",")+2;
-            int lastindex = s.IndexOf(",", index+1);
-
-            for (int i = index; i < lastindex; i++)
-                newstr += s[i];
-            Console.WriteLine(newstr);
+           
 
         }
         static void Main(string[] args)
         {
-              
               Console.WriteLine("Введите 1 чтобы запустить бота");
               Console.WriteLine("Введите 2 чтобы получить логи пользователя");
             if (Convert.ToInt32(Console.ReadLine()) == 1)

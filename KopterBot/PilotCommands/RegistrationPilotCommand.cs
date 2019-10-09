@@ -153,8 +153,10 @@ namespace KopterBot.PilotCommands
                     user.PilotPrivilag = 2;
                     await provider.userService.Update(user);
                     await provider.adminPush.MessageAboutRegistrationPilot(client, provider, chatid);
+                    await provider.userService.ChangeAction(chatid, "NULL", 0);
                     // можно считать человека зарегистрированым только после оплаты , и определяем насколько он крут в плане полномочий
                     await client.SendTextMessageAsync(chatid, "Вы успешно зарегистрировались");
+                    return;
                 }
             }
 

@@ -56,7 +56,7 @@ namespace KopterBot.PilotCommands
                $"Описание: {task.Description} \n" +
                $"Сумма: {task.Sum}";
 
-           
+            
             await provider.showOrderService.SetDefaultProduct(chatid);
             await provider.showOrderService.ChangeMessageId(chatid, messageObject.Message.MessageId);
             await client.SendTextMessageAsync(chatid, message, 0, false, false, 0, KeyBoardHandler.CallBackShowOrders());

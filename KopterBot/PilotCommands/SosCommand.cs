@@ -67,10 +67,10 @@ namespace KopterBot.PilotCommands
                             await client.SendTextMessageAsync(i, _message);
                             await client.SendLocationAsync(chatid, sos.lautitude, sos.longtitude);
                         }
+                        await provider.userService.ChangeAction(chatid, "NULL", 0);
                         await client.SendTextMessageAsync(chatid, "Мы разослали письмо о помощи нашем партнерам");
                         return;
                     }
-
                 }
             }
         }

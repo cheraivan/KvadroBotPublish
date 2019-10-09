@@ -108,6 +108,7 @@ namespace KopterBot.Bot
             if(messageText == "Закончить диалог")
             {
                 await stopChat.Request(chatid);
+                return;
             }
 
             if (await provider.hubService.IsChatActive(chatid))
@@ -165,6 +166,11 @@ namespace KopterBot.Bot
                         0, false, false, 0, KeyBoardHandler.ChangeKeyBoardPilot(user.PilotPrivilag));
                     return;
                 }
+            }
+            if(messageText == "Партнеры рядом")
+            {
+
+                return;
             }
             if (messageText == "Полный функционал платно")
             {
