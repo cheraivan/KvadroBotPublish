@@ -24,6 +24,8 @@ namespace KopterBot.DTO
         public DbSet<SosDTO> sosTable { get; set; }
         public DbSet<ShowOrdersDTO> showOrdersDTO { get; set; }
 
+        public DbSet<ShowUsersDTO> showUsersDTO { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseMySQL("server=localhost;UserId=root;Password=12345;database=kvadrobot;");

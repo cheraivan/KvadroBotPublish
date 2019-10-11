@@ -15,7 +15,17 @@ namespace KopterBot.Services
         private ShowOrderService _showOrderService;
         private OfferService _offerService;
         private sosTableService _sosTableService;
+        private ShowUserService _showUserService;
 
+        public ShowUserService showUserService
+        {
+            get
+            {
+                if (_showUserService == null)
+                    _showUserService = new ShowUserService();
+                return _showUserService;
+            }
+        }
         public sosTableService sosTableServide
         {
             get

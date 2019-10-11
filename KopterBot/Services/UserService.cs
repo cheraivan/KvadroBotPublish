@@ -16,9 +16,13 @@ namespace KopterBot.Services
             IQueryable<UserDTO> users = userRepository.Get();
             return users.Where(predicate).FirstOrDefault();
         }
+        public async ValueTask<UserDTO> FindById(int id)
+        {
+            return await userRepository.FindById(id);
+        }
         public async ValueTask<UserDTO> FindById(long chatid)
         {
-            return await userRepository.FindById(chatid);
+            return await userRepository.Get().FirstOrDefaultAsync(i => i.ChatId == chatid);
         }
 
         public async ValueTask<List<UserDTO>> GetUsersById(long chatid)

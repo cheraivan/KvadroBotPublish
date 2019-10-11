@@ -20,6 +20,15 @@ namespace KopterBot.Repository
             user.step = new StepDTO();
             //user.step.ChatId = user.ChatId;
             user.proposals = new List<ProposalDTO>();
+            int currMaxId;
+            try
+            {
+                currMaxId = await db.Users.MaxAsync(i => i.IdForShow) + 1;
+            } catch (System.Exception ex)
+            {
+                currMaxId = 1;
+            }
+            user.IdForShow = currMaxId;
             await base.Create(user);
         }
       
