@@ -7,6 +7,38 @@ namespace KopterBot.Bot
 {
     class KeyBoardHandler
     {
+        public static IReplyMarkup ShowPatnersPilot()
+        {
+            return new ReplyKeyboardMarkup
+            {
+                Keyboard = new[]
+                {
+                    new[]
+                    {
+                        new KeyboardButton("Из геолокации")
+                    },
+                    new[]
+                    {
+                        new KeyboardButton("Выбрать по региону")
+                    }
+                },
+                ResizeKeyboard = true
+            };
+        }
+        public static IReplyMarkup ShowPartners()
+        {
+            return new ReplyKeyboardMarkup
+            {
+                Keyboard = new[]
+                {
+                    new[]
+                    {
+                        new KeyboardButton("Просмотр пилотов")
+                    },
+                },
+                ResizeKeyboard = true
+            };
+        }
         public static IReplyMarkup EndDialog()
         {
             return new ReplyKeyboardMarkup

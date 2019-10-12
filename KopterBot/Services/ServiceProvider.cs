@@ -16,6 +16,17 @@ namespace KopterBot.Services
         private OfferService _offerService;
         private sosTableService _sosTableService;
         private ShowUserService _showUserService;
+        private RegionService _regionService;
+
+        public RegionService regionService
+        {
+            get
+            {
+                if (_regionService == null)
+                    _regionService = new RegionService();
+                return _regionService;
+            }
+        }
 
         public ShowUserService showUserService
         {

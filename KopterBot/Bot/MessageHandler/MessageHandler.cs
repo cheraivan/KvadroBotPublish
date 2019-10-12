@@ -21,6 +21,7 @@ using KopterBot.Services;
 using KopterBot.BuisnessCommand;
 using KopterBot.PilotCommands;
 using KopterBot.Chat;
+using KopterBot.PilotCommands.CallBacks;
 
 namespace KopterBot.Bot
 {
@@ -38,7 +39,7 @@ namespace KopterBot.Bot
         ShowOrders showOrders;
 
         StopChat stopChat;
-
+        ShowUsersCommand showUserCommand;
         public MessageHandler(TelegramBotClient client, MainProvider provider)
         {
             this.client = client;
@@ -46,6 +47,7 @@ namespace KopterBot.Bot
             buisnessAction = new CreateBuisnessTask(provider, client);
             registrationPilotsCommand = new RegistrationPilotCommand(client,provider);
             showOrders = new ShowOrders(client, provider);
+            showUserCommand = new ShowUsersCommand(client, provider);
 
             stopChat = new StopChat(client, provider);
         }
@@ -169,7 +171,8 @@ namespace KopterBot.Bot
             }
             if(messageText == "Партнеры рядом")
             {
-
+                await provider.userService.ChangeAction(chatid, "Партнеры рядом", 1);
+                await showUserCommand.Response(message);
                 return;
             }
             if (messageText == "Полный функционал платно")
@@ -260,6 +263,10 @@ namespace KopterBot.Bot
            
             if (action!=null)
             {
+                if(action == "Партнеры рядом")
+                {
+                    await showUserCommand.Response(message);
+                }
                 if(action == "Платная регистрация со страховкой")
                 {
                     await registrationPilotsCommand.CommandHandler_PaidRegistrationWithInsurance(user,messageText,message);

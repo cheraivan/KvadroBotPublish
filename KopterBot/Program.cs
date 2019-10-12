@@ -21,11 +21,11 @@ namespace KopterBot
         }
         static async void T()
         {
-           
-
+            Console.WriteLine(GetGeolocateRegion.GetRegion("Украина, Харьков, проспект Льва Ландау, 20"));
         }
         static void Main(string[] args)
         {
+            T();
               Console.WriteLine("Введите 1 чтобы запустить бота");
               Console.WriteLine("Введите 2 чтобы получить логи пользователя");
             if (Convert.ToInt32(Console.ReadLine()) == 1)

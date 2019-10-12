@@ -70,6 +70,7 @@ namespace KopterBot.PilotCommands
                     proposal.longtitude = messageObject.Message.Location.Longitude;
                     proposal.latitude = messageObject.Message.Location.Latitude;
                     string realAdres = await GeolocateHandler.GetAddressFromCordinat(proposal.longtitude, proposal.latitude);
+                    proposal.Region = GetGeolocateRegion.GetRegion(realAdres);
                     proposal.RealAdress = realAdres;
                     await provider.proposalService.Update(proposal);
                     await provider.proposeHandler.ChangeProposeCount();
@@ -144,6 +145,7 @@ namespace KopterBot.PilotCommands
                     proposal.longtitude = messageObject.Message.Location.Longitude;
                     proposal.latitude = messageObject.Message.Location.Latitude;
                     string realAdres = await GeolocateHandler.GetAddressFromCordinat(proposal.longtitude, proposal.latitude);
+                    proposal.Region = GetGeolocateRegion.GetRegion(realAdres);
                     proposal.RealAdress = realAdres;
                     await provider.proposalService.Update(proposal);
                     await client.SendTextMessageAsync(chatid, "Ожидаем оплату,если все нормально - кидаем клаву с этими кнопками и если все оплатил кидаем в админ-уведомление"
@@ -155,6 +157,8 @@ namespace KopterBot.PilotCommands
                     await provider.adminPush.MessageAboutRegistrationPilot(client, provider, chatid);
                     await provider.userService.ChangeAction(chatid, "NULL", 0);
                     // можно считать человека зарегистрированым только после оплаты , и определяем насколько он крут в плане полномочий
+                    string region = GetGeolocateRegion.GetRegion(realAdres);
+                    await provider.regionService.Create(region);
                     await client.SendTextMessageAsync(chatid, "Вы успешно зарегистрировались");
                     return;
                 }

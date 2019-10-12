@@ -14,7 +14,7 @@ namespace KopterBot.Chat
     {
         public StopChat(TelegramBotClient client,MainProvider provider) : base(client, provider) { }
 
-        public override async Task Request(long chatid)
+        public async Task Request(long chatid)
         {
             if (!await provider.hubService.IsChatActive(chatid))
             {
