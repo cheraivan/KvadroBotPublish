@@ -1,4 +1,5 @@
 ﻿using KopterBot.Base.BaseClass;
+using KopterBot.Bot;
 using KopterBot.DTO;
 using System;
 using System.Collections.Generic;
@@ -20,34 +21,40 @@ namespace KopterBot.PilotCommands
 
             int currStep = await provider.userService.GetCurrentActionStep(chatid);
             SosDTO sos = await provider.sosTableServide.FindById(chatid);
-
+            if(currStep == 0)
+            {
+                await provider.userService.ChangeAction(chatid, "SOS", ++currStep);
+                return;
+            }
             if (currStep == 1)
             {
-                if (message == "Страховой случай")
+                if (message == "Страховой случай" || message == "Аварийный случай")
                 {
-                    await client.SendTextMessageAsync(chatid, "Не указано откуда брать данные и куда их слать");
-                    return;
-                }
-                else if (message == "Аварийный случай")
-                {
-                    await provider.sosTableServide.Create(new SosDTO
+                    if (message == "Страховой случай")
                     {
-                        ChatId = chatid,
-                        Type = true
-                    });
-                    await client.SendTextMessageAsync(chatid, "Сбросьте вашу геолокацию");
-                    await provider.userService.ChangeAction(chatid, "SOS", ++currStep);
-                    return;
+                        await client.SendTextMessageAsync(chatid, "Не указано откуда брать данные и куда их слать");
+                        return;
+                    }
+                    else if (message == "Аварийный случай")
+                    {
+                        await provider.sosTableServide.Create(new SosDTO
+                        {
+                            ChatId = chatid,
+                            Type = 1
+                        });
+                        await client.SendTextMessageAsync(chatid, "Сбросьте вашу геолокацию",0,false,false,0,KeyBoardHandler.Markup_Back_From_First_Action());
+                        await provider.userService.ChangeAction(chatid, "SOS", ++currStep);
+                        return;
+                    }
                 }
                 else
                 {
-                    await client.SendTextMessageAsync(chatid, "Выберите один из существующих вариантов");
-                    return;
+                    await client.SendTextMessageAsync(chatid, "Вы выбрали несуществующий вариант");
                 }
             }
             if (currStep == 2)
             {
-                if (sos.Type == true)
+                if (sos.Type == 1)
                 {
                     if (messageObject.Message.Location != null)
                     {

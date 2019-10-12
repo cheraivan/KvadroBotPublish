@@ -1,4 +1,5 @@
 ﻿using KopterBot.DTO;
+using KopterBot.Exception;
 using KopterBot.Repository;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -20,7 +21,8 @@ namespace KopterBot.Services
         }
         public async ValueTask<SosDTO> FindById(long chatid)
         {
-            return await sosTableRepository.Get().FirstOrDefaultAsync(i => i.ChatId == chatid);
+            SosDTO sos = await sosTableRepository.Get().FirstOrDefaultAsync(i => i.ChatId == chatid);
+            return sos;
         }
     }
 }

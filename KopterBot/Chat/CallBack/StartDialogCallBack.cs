@@ -41,6 +41,7 @@ namespace KopterBot.Chat.CallBack
             if(await provider.hubService.PilotInDialog(chatIdReceiver))
             {
                 await client.SendTextMessageAsync(chatid, "Пилот в диалоге");
+                return;
             }
 
 

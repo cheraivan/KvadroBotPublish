@@ -7,6 +7,24 @@ namespace KopterBot.Bot
 {
     class KeyBoardHandler
     {
+        public static IReplyMarkup VariantSOS()
+        {
+            return new ReplyKeyboardMarkup
+            {
+                Keyboard = new[]
+                {
+                    new[]
+                    {
+                        new KeyboardButton("Страховой случай")
+                    },
+                    new[]
+                    {
+                        new KeyboardButton("Аварийный случай")
+                    }
+                },
+                ResizeKeyboard = true
+            };
+        }
         public static IReplyMarkup ShowPatnersPilot()
         {
             return new ReplyKeyboardMarkup

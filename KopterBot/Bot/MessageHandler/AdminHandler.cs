@@ -1,4 +1,5 @@
-﻿using KopterBot.DTO;
+﻿using KopterBot.Base.BaseClass;
+using KopterBot.DTO;
 using KopterBot.Interfaces;
 using KopterBot.Repository;
 using System;
@@ -10,9 +11,16 @@ using Telegram.Bot.Args;
 
 namespace KopterBot.Bot
 {
-    class AdminHandler:RepositoryProvider
-    { 
-        public AdminHandler(TelegramBotClient client) { }
+    class AdminHandler
+    {
+        TelegramBotClient client;
+        MainProvider provider;
+    
+        public AdminHandler(TelegramBotClient client, MainProvider provider)
+        {
+            this.client = client;
+            this.provider = provider;
+        }
 
         public async Task BaseAdminMessage(MessageEventArgs message)
         {

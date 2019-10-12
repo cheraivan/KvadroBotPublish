@@ -81,8 +81,6 @@ namespace KopterBot.Bot
                 return;
             }
 
-
-
             if (messageText == "Назад")
             {
                 await provider.userService.ChangeAction(chatid, "NULL", 0);
@@ -103,6 +101,14 @@ namespace KopterBot.Bot
             if(CommandList.RegistrationBuisnessCommandList().Contains(messageText) && user.BuisnesPrivilag!=0)
             {
                 await client.SendTextMessageAsync(chatid, "Вы уже зарегестрированы", 0, false, false, 0, KeyBoardHandler.Murkup_BuisnessmanMenu());
+                return;
+            }
+
+            if(messageText == "SOS")
+            {
+                await client.SendTextMessageAsync(chatid, "Выберите один из вариантов",0,false,false,0,KeyBoardHandler.VariantSOS());
+                await provider.userService.ChangeAction(chatid,"SOS",0);
+                await commandProvider.pilotCommandProvider.sosCommand.SosHandler(message);
                 return;
             }
 
@@ -221,9 +227,15 @@ namespace KopterBot.Bot
            
             if (action!=null)
             {
+                if(action == "SOS")
+                {
+                    await commandProvider.pilotCommandProvider.sosCommand.SosHandler(message);
+                    return;
+                }
                 if(action == "Партнеры рядом")
                 {
                     await commandProvider.pilotCommandProvider.showUsersCommand.Response(message);
+                    return;
                 }
                 if(action == "Платная регистрация со страховкой")
                 {
