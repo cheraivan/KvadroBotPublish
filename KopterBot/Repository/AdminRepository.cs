@@ -18,7 +18,11 @@ namespace KopterBot.Repository
 
         #region Public_Methods
 
-        
+        public async override ValueTask<AdminDTO> FindById(long id)
+        {
+            return await db.Admins.FirstOrDefaultAsync(i => i.ChatId == id);
+        }
+
         #endregion
     }
 }

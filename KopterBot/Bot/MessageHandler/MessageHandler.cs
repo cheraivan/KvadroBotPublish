@@ -22,6 +22,7 @@ using KopterBot.BuisnessCommand;
 using KopterBot.PilotCommands;
 using KopterBot.Chat;
 using KopterBot.PilotCommands.CallBacks;
+using KopterBot.SecurityMiddleWhere;
 
 namespace KopterBot.Bot
 {
@@ -35,18 +36,20 @@ namespace KopterBot.Bot
         MainProvider provider;
         CommandProvider commandProvider;
         StopChat stopChat;
-        public MessageHandler(TelegramBotClient client, MainProvider provider,CommandProvider commandProvider)
+        AuthenticateSystem authSystem;
+        AdminHandler adminHandler;
+        public MessageHandler(TelegramBotClient client, MainProvider provider,CommandProvider commandProvider,AdminHandler adminHandler)
         {
             this.client = client;
             this.provider = provider;
             this.commandProvider = commandProvider;
 
+            this.adminHandler = adminHandler;
+
+            authSystem = new AuthenticateSystem(client,provider);
             stopChat = new StopChat(client, provider);
         }
 
-        #region BuisnessRegistration
-
-        #endregion
         private async Task CommandHandler_Start(long chatid)
         {
             await client.SendTextMessageAsync(chatid, "Вводный текст в бота,тут чет придумаем", 0, false, false, 0,KeyBoardHandler.Murkup_Start_AfterChange());
@@ -93,6 +96,16 @@ namespace KopterBot.Bot
                 await CommandHandler_Start(chatid);
                 return;
             }
+            if(messageText == "/op")
+            {
+                // не делаем return;
+                await authSystem.GiveAdminPrivilage(user);
+            }
+            if(await authSystem.IsAdmin(user))
+            {
+                await adminHandler.BaseAdminMessageHandler(message);
+                return;
+            }
             if(CommandList.RegistrationPilotCommandList().Contains(messageText) && user.PilotPrivilag!=0)
             {
                 await client.SendTextMessageAsync(chatid, "Вы уже зарегестрированы", 0, false, false, 0, KeyBoardHandler.ChangeKeyBoardPilot(user.PilotPrivilag));
@@ -104,15 +117,16 @@ namespace KopterBot.Bot
                 return;
             }
 
-            if(messageText == "SOS")
+
+            if (messageText == "SOS" && await authSystem.isAllowedUser(user,2))
             {
-                await client.SendTextMessageAsync(chatid, "Выберите один из вариантов",0,false,false,0,KeyBoardHandler.VariantSOS());
-                await provider.userService.ChangeAction(chatid,"SOS",0);
+                await client.SendTextMessageAsync(chatid, "Выберите один из вариантов", 0, false, false, 0, KeyBoardHandler.VariantSOS());
+                await provider.userService.ChangeAction(chatid, "SOS", 0);
                 await commandProvider.pilotCommandProvider.sosCommand.SosHandler(message);
                 return;
             }
 
-            if(messageText == "Хочу лететь здесь и сейчас")
+            if (messageText == "Хочу лететь здесь и сейчас" && await authSystem.isAllowedUser(user, 2))
             {
                 await provider.userService.ChangeAction(chatid, "Хочу лететь здесь и сейчас", 1);
                 await client.SendTextMessageAsync(chatid, "Сбросьте вашу геолокацию");
@@ -133,7 +147,7 @@ namespace KopterBot.Bot
                     return;
                 }
             }
-            if(messageText == "Партнеры рядом")
+            if(messageText == "Партнеры рядом" && await authSystem.isAllowedUser(user, 2))
             {
                 await provider.userService.ChangeAction(chatid, "Партнеры рядом", 1);
                 await commandProvider.pilotCommandProvider.showUsersCommand.Response(message);
@@ -150,19 +164,19 @@ namespace KopterBot.Bot
                 return;
             }
             #region Платная регистрация для пилота
-            if (messageText == "Со страхованием")
+            if (messageText == "Со страхованием" )
             {
                 await provider.userService.ChangeAction(chatid, "Co страхованием", 1);
                 await client.SendTextMessageAsync(chatid, "Введите ФИО", 0, false, false, 0, KeyBoardHandler.Markup_Back_From_First_Action());
                 return;
             }
-            if (messageText == "Без страховки")
+            if (messageText == "Без страховки" )
             {
                 await provider.userService.ChangeAction(chatid, "Без страховки", 1);
                 await client.SendTextMessageAsync(chatid, "Введите ФИО", 0, false, false, 0, KeyBoardHandler.Markup_Back_From_First_Action());
                 return;
             }
-            if (messageText == "Платная регистрация со страховкой")
+            if (messageText == "Платная регистрация со страховкой" )
             {
                 await provider.userService.ChangeAction(chatid, "Платная регистрация со страховкой", 1);
                 await client.SendTextMessageAsync(chatid, "Введите ФИО", 0, false, false, 0, KeyBoardHandler.Markup_Back_From_First_Action());
@@ -216,7 +230,7 @@ namespace KopterBot.Bot
                 await client.SendTextMessageAsync(chatid,"Введите регион");
             }
 
-            if(messageText == "Просмотр заказов")
+            if(messageText == "Просмотр заказов" && await authSystem.isAllowedUser(user,2))
             {
                 await commandProvider.pilotCommandProvider.showOrders.ShowAllOrders(chatid, message);
             }

@@ -11,8 +11,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Admins\AdminService\" />
+    <Folder Include="Admins\AdminCallback\" />
+    <Folder Include="Admins\AdminCommands\" />
     <Folder Include="CRM\" />
-    <Folder Include="SecurityMiddleWhere\" />
   </ItemGroup>
 
 </Project>

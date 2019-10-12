@@ -11,7 +11,7 @@ using Telegram.Bot.Args;
 
 namespace KopterBot.Bot
 {
-    class AdminHandler
+    class AdminHandler:IMessageAdminHandler
     {
         TelegramBotClient client;
         MainProvider provider;
@@ -21,10 +21,11 @@ namespace KopterBot.Bot
             this.client = client;
             this.provider = provider;
         }
-
-        public async Task BaseAdminMessage(MessageEventArgs message)
+        public async Task BaseAdminMessageHandler(MessageEventArgs args)
         {
-            
+            long chatid = args.Message.Chat.Id;
+
+            await client.SendTextMessageAsync(chatid, "тест");
         }
     }
 }

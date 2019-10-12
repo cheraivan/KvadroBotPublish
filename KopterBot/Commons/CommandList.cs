@@ -18,6 +18,23 @@ namespace KopterBot.Commons
             }
             return result;
         }
+        public static List<string> PilotCommandListWithMaxPrivilage()
+        {
+            List<string> result = new List<string>();
+            result.Add("Просмотр заказов");
+            result.Add("Хочу лететь здесь и сейчас");
+            result.Add("Запланировать полёт");
+            result.Add("Партнеры рядом");
+            result.Add("SOS");
+            return result;
+        }
+        public static List<string> PilotCommandListWithMinPrivilage()
+        {
+            List<string> result = new List<string>();
+            result.Add("Партнеры");
+            result.Add("Просмотр заказов");
+            return result;
+        }
         public static List<string> RegistrationPilotCommandList()
         {
             List<string> result = new List<string>();

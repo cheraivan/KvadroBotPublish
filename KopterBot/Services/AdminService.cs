@@ -9,6 +9,7 @@ namespace KopterBot.Services
 {
     class AdminService : RepositoryProvider
     {
+
         public async ValueTask<int> CountAdmins() =>
             await adminRepository.Get().CountAsync();
 
