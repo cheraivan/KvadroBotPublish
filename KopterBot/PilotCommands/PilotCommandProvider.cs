@@ -13,6 +13,40 @@ namespace KopterBot.PilotCommands
         private RegistrationPilotCommand _registrationCommand;
         private ShowOrders _showOrders;
         private RequestOfferCallBack _requestOffer;
+        private FlyNow _flyNow;
+        private SosCommand _sosCommand;
+        private ShowUsersCommand _showUsersCommand;
+
+        public ShowUsersCommand showUsersCommand
+        {
+            get
+            {
+                if (_showUsersCommand == null)
+                    _showUsersCommand = new ShowUsersCommand(client, provider);
+                return _showUsersCommand;
+            }
+        }
+
+        public SosCommand sosCommand
+        {
+            get
+            {
+                if (_sosCommand == null)
+                    _sosCommand = new SosCommand(client,provider);
+                return _sosCommand;
+            }
+        }
+
+        public FlyNow flyNow
+        {
+            get
+            {
+                if (_flyNow == null)
+                    _flyNow = new FlyNow(client, provider);
+                return _flyNow;
+            }
+        }
+
         public RegistrationPilotCommand registrationCommand
         {
             get
@@ -23,7 +57,7 @@ namespace KopterBot.PilotCommands
             }
         }
 
-        public ShowOrders showOrder
+        public ShowOrders showOrders
         {
             get
             {

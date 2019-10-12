@@ -33,60 +33,18 @@ namespace KopterBot.Bot
         long chatid;
         TelegramBotClient client;
         MainProvider provider;
-
-        CreateBuisnessTask buisnessAction;
-        RegistrationPilotCommand registrationPilotsCommand;
-        ShowOrders showOrders;
-
+        CommandProvider commandProvider;
         StopChat stopChat;
-        ShowUsersCommand showUserCommand;
-        public MessageHandler(TelegramBotClient client, MainProvider provider)
+        public MessageHandler(TelegramBotClient client, MainProvider provider,CommandProvider commandProvider)
         {
             this.client = client;
             this.provider = provider;
-            buisnessAction = new CreateBuisnessTask(provider, client);
-            registrationPilotsCommand = new RegistrationPilotCommand(client,provider);
-            showOrders = new ShowOrders(client, provider);
-            showUserCommand = new ShowUsersCommand(client, provider);
+            this.commandProvider = commandProvider;
 
             stopChat = new StopChat(client, provider);
         }
 
         #region BuisnessRegistration
-        private async Task CommandHandler_BuisnessRegistrationKorporativ(long chatid,string message,MessageEventArgs messageObject)
-        {
-            int currentStep = await provider.userService.GetCurrentActionStep(chatid);
-
-            UserDTO user = await provider.userService.FindById(chatid);
-
-            DronDTO dron = new DronDTO();
-
-            if(currentStep == 1)
-            {
-                user.FIO = message;
-                await provider.userService.Update(user);
-                await provider.userService.ChangeAction(chatid, "Корпоративная бизнесс-регистрация", ++currentStep);
-                await client.SendTextMessageAsync(chatid, "Введите номер телефона");
-                return;
-            }
-
-            if(currentStep == 2)
-            {
-                if (RegularExpression.IsTelephoneCorrect(message))
-                {
-                    user.Phone = message;
-                    user.BuisnesPrivilag = 1;
-                    await provider.userService.Update(user);
-                    await client.SendTextMessageAsync(chatid, "Вы успешно зарегистрировались", 0, false, false, 0, KeyBoardHandler.Murkup_BuisnessmanMenu());
-                    await provider.managerPush.SendMessage(client, chatid);
-                    return;
-                }
-                else
-                {
-                    await client.SendTextMessageAsync(chatid, "Вы ввели некорректный телефон,попробуйте еще раз");
-                }
-            }
-        }
 
         #endregion
         private async Task CommandHandler_Start(long chatid)
@@ -172,7 +130,7 @@ namespace KopterBot.Bot
             if(messageText == "Партнеры рядом")
             {
                 await provider.userService.ChangeAction(chatid, "Партнеры рядом", 1);
-                await showUserCommand.Response(message);
+                await commandProvider.pilotCommandProvider.showUsersCommand.Response(message);
                 return;
             }
             if (messageText == "Полный функционал платно")
@@ -254,47 +212,47 @@ namespace KopterBot.Bot
 
             if(messageText == "Просмотр заказов")
             {
-                await showOrders.ShowAllOrders(chatid, message);
+                await commandProvider.pilotCommandProvider.showOrders.ShowAllOrders(chatid, message);
             }
             if(messageText == "Просмотреть свои заказы")
             {
-                await showOrders.ShowAllOrders(chatid, message, true);
+                await commandProvider.pilotCommandProvider.showOrders.ShowAllOrders(chatid, message, true);
             }
            
             if (action!=null)
             {
                 if(action == "Партнеры рядом")
                 {
-                    await showUserCommand.Response(message);
+                    await commandProvider.pilotCommandProvider.showUsersCommand.Response(message);
                 }
                 if(action == "Платная регистрация со страховкой")
                 {
-                    await registrationPilotsCommand.CommandHandler_PaidRegistrationWithInsurance(user,messageText,message);
+                    await commandProvider.pilotCommandProvider.registrationCommand.CommandHandler_PaidRegistrationWithInsurance(user,messageText,message);
                     return;
                 }
                 if(action == "Платная регистрация без страховки")
                 {
-                    await registrationPilotsCommand.CommandHandler_PaidRegistrationWithoutInsurance(user, messageText, message);
+                    await commandProvider.pilotCommandProvider.registrationCommand.CommandHandler_PaidRegistrationWithoutInsurance(user, messageText, message);
                     return;
                 }
                 if(action == "Со страхованием")
                 {
-                    await registrationPilotsCommand.CommandHandler_PaidRegistrationWithInsurance(user, messageText, message);
+                    await commandProvider.pilotCommandProvider.registrationCommand.CommandHandler_PaidRegistrationWithInsurance(user, messageText, message);
                     return;
                 }
                 if(action == "Без страховки")
                 {
-                    await registrationPilotsCommand.CommandHandler_PaidRegistrationWithoutInsurance(user, messageText, message);
+                    await commandProvider.pilotCommandProvider.registrationCommand.CommandHandler_PaidRegistrationWithoutInsurance(user, messageText, message);
                     return;
                 }
                 if(action == "Корпоративная бизнесс-регистрация")
                 {
-                    await CommandHandler_BuisnessRegistrationKorporativ(chatid, messageText, message);
+                    await commandProvider.buisnessCommandProvider.buisnessTaskRegistration.CommandHandler_BuisnessRegistrationKorporativ(chatid, messageText, message);
                     return;
                 }
                 if(action == "Создать новую задачу")
                 {
-                    await buisnessAction.CreateTask(chatid, messageText, message);
+                    await commandProvider.buisnessCommandProvider.createBuisnessTaskRegistration.CreateTask(chatid, messageText, message);
                     return;
                 }
             }

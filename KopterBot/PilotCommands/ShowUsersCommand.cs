@@ -10,7 +10,7 @@ using Telegram.Bot;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types.ReplyMarkups;
 
-namespace KopterBot.PilotCommands.CallBacks
+namespace KopterBot.PilotCommands
 {
     class ShowUsersCommand:BaseCommand
     {
@@ -18,12 +18,15 @@ namespace KopterBot.PilotCommands.CallBacks
 
         public async Task Response(MessageEventArgs messageObject)
         {
+            if (provider == null)
+                await client.SendTextMessageAsync(messageObject.Message.Chat.Id, "оч странно");
             long chatid = messageObject.Message.Chat.Id;
             int currStep = await provider.userService.GetCurrentActionStep(chatid);
             string messageText = messageObject.Message.Text;
             int countUser;
+            string message;
 
-            if(currStep == 1)
+            if (currStep == 1)
             {
                 await client.SendTextMessageAsync(chatid, "Выберите один из вариантов",0,false,false,0,KeyBoardHandler.ShowPartners());
                 await provider.userService.ChangeAction(chatid, "Партнеры рядом", ++currStep);
@@ -49,8 +52,22 @@ namespace KopterBot.PilotCommands.CallBacks
                     countUser = await provider.showUserService.CountUsersAsync();
                     if (messageText == "Из геолокации")
                     {
-
-                        return;
+                        if (countUser > 1)
+                        {
+                            ProposalDTO proposal = await provider.proposalService.FindById(chatid);
+                            UserDTO user = await provider.showUserService.GetFirstUserForCommand(chatid, proposal.Region);
+                            message = $"Пилот:{user.FIO} \n" +
+                            $"Телефон:{user.Phone}";
+                            await provider.showUserService.ChangeMessageId(chatid, messageObject.Message.MessageId);
+                            await client.SendTextMessageAsync(chatid, "Вы можете просмотреть пользователей", 0, false, false, 0, KeyBoardHandler.Markup_Back_From_First_Action());
+                            await client.SendTextMessageAsync(chatid, message, 0, false, false, 0, KeyBoardHandler.CallBackShowForUser());
+                            return;
+                        }
+                        else if(countUser == 1)
+                        {
+                            await client.SendTextMessageAsync(chatid, "К сожалению,вы зарегестрированы один", 0, false, false, 0, KeyBoardHandler.Markup_Back_From_First_Action());
+                            return;
+                        }
                     }
                     if(messageText == "Выбрать по региону")
                     {
@@ -75,16 +92,17 @@ namespace KopterBot.PilotCommands.CallBacks
                     await client.SendTextMessageAsync(chatid, "Попробуйте еще раз");
                 }
             }
-            if(currStep == 4)
+            if (currStep == 4)
             {
                 List<string> regions = await provider.regionService.GetAllRegions();
-                if(regions.Contains(messageText))
+                if (regions.Contains(messageText))
                 {
                     UserDTO user = await provider.showUserService.GetFirstUserForCommand(chatid, messageText);
                     await provider.showUserService.ChangeMessageId(chatid, messageObject.Message.MessageId);
-                    string message = $"Пилот:{user.FIO} \n" +
+                    message = $"Пилот:{user.FIO} \n" +
                     $"Телефон:{user.Phone}";
-                    await client.SendTextMessageAsync(chatid, message);
+                    await client.SendTextMessageAsync(chatid, "Вы можете просмотреть пользователей", 0, false, false, 0, KeyBoardHandler.Markup_Back_From_First_Action());
+                    await client.SendTextMessageAsync(chatid, message,0,false,false,0,KeyBoardHandler.CallBackShowForUser());
                     return;
                 }
                 else
@@ -92,21 +110,6 @@ namespace KopterBot.PilotCommands.CallBacks
                     await client.SendTextMessageAsync(chatid, "Вы выбрали несуществующий регион");
                 }
             }
-            /*
-            countUser = await provider.showUserService.CountUsersAsync();
-            if(countUser == 1)
-            {
-                await client.SendTextMessageAsync(chatid, "Вы один зарегестрированный пилот");
-                return;
-            }
-            else
-            {
-                UserDTO user = await provider.showUserService.GetFirstUserForCommand(chatid);
-                await provider.showUserService.ChangeMessageId(chatid, messageObject.Message.MessageId);
-                string message = $"Пилот:{user.FIO} \n" +
-                    $"Телефон:{user.Phone}";
-
-            }*/
         }
     }
 }

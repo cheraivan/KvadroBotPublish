@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <Folder Include="CRM\" />
+    <Folder Include="SecurityMiddleWhere\" />
   </ItemGroup>
 
 </Project>

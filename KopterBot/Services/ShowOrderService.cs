@@ -195,7 +195,10 @@ namespace KopterBot.Services
                     return null;
                 }
                 currIdProduct = order.Id;
-                result = await buisnessTaskRepository.Get().FirstOrDefaultAsync(i => i.Id < currIdProduct && i.ChatId == chatid);
+
+                // возможно FirstOrDefault,не тестил
+
+                result = await buisnessTaskRepository.Get().LastOrDefaultAsync(i => i.Id < currIdProduct && i.ChatId == chatid);
                 return result.Id;
             }
             min =await buisnessTaskRepository.MinId();
@@ -216,7 +219,7 @@ namespace KopterBot.Services
 
             if (min == currIdProduct)
                 return null;
-            result = await buisnessTaskRepository.Get().FirstOrDefaultAsync(i => i.Id < currIdProduct);
+            result = await buisnessTaskRepository.Get().LastOrDefaultAsync(i => i.Id < currIdProduct);
             return result.Id;
         }
         private async ValueTask<int?> NextProduct(long chatid,int MessageId,bool isBuisnessman = false)

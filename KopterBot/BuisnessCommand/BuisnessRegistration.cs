@@ -15,8 +15,10 @@ namespace KopterBot.BuisnessCommand
     {
         public BuisnessRegistration(TelegramBotClient client,MainProvider provider):base(client,provider) { }
 
-        private async Task CommandHandler_BuisnessRegistrationKorporativ(long chatid, string message, MessageEventArgs messageObject)
+        public async Task CommandHandler_BuisnessRegistrationKorporativ(long chatid, string message, MessageEventArgs messageObject)
         {
+            if (provider.userService == null)
+                await client.SendTextMessageAsync(chatid, "strange");
             int currentStep = await provider.userService.GetCurrentActionStep(chatid);
 
             UserDTO user = await provider.userService.FindById(chatid);

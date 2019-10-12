@@ -102,13 +102,93 @@ namespace KopterBot.Services
                 await showUserRepository.Create(showUsersTable);
             }
             showUsersTable.CurrentId = minId;
+            showUsersTable.Region = region;
             await showUserRepository.Update(showUsersTable);
             return currUser;
         }
 
-       /* public async ValueTask<UserDTO> GetPreviousUser(long chatid)
+        public async ValueTask<UserDTO> GetNextUser(long chatid)
         {
-            
-        }*/
+            ShowUsersDTO showUserTable = await showUserRepository.Get().FirstOrDefaultAsync(i => i.ChatId == chatid);
+
+            string region = showUserTable.Region;
+
+            List<UserDTO> userLst = await (from u in userRepository.Get()
+                                           join p in proposalRepository.Get()
+                                           on u.ChatId equals p.ChatId
+                                           where p.Region == region
+                                           select new UserDTO
+                                           {
+                                               BuisnesPrivilag = u.BuisnesPrivilag,
+                                               ChatId = u.ChatId,
+                                               FIO = u.FIO,
+                                               IdForShow = u.IdForShow,
+                                               IsRegister = u.IsRegister,
+                                               Login = u.Login,
+                                               Phone = u.Phone,
+                                               PilotPrivilag = u.PilotPrivilag
+                                           }).ToListAsync();
+            int currShowId = showUserTable.CurrentId;
+            int maxId = userLst.Max(i => i.IdForShow);
+            if (currShowId == maxId)
+                return null;
+            List<int> showUserIdList = userLst.Select(i => i.IdForShow).ToList();
+            showUserIdList.Sort();
+
+            currShowId = showUserIdList.FirstOrDefault(i => i > currShowId);
+
+            UserDTO result = userLst.FirstOrDefault(i => i.IdForShow == currShowId);
+            if(result.ChatId  == chatid)
+            {
+                result = userLst.FirstOrDefault(i => i.IdForShow > currShowId);
+            }
+            showUserTable.CurrentId = result.IdForShow;
+            await showUserRepository.Update(showUserTable);
+            return result;
+        }
+
+        public async ValueTask<UserDTO> GetPreviousUser(long chatid)
+        {
+            ShowUsersDTO showUserTable = await showUserRepository.Get().FirstOrDefaultAsync(i => i.ChatId == chatid);
+
+            string region = showUserTable.Region;
+
+            List<UserDTO> userLst = await (from u in userRepository.Get()
+                                           join p in proposalRepository.Get()
+                                           on u.ChatId equals p.ChatId
+                                           where p.Region == region
+                                           select new UserDTO
+                                           {
+                                               BuisnesPrivilag = u.BuisnesPrivilag,
+                                               ChatId = u.ChatId,
+                                               FIO = u.FIO,
+                                               IdForShow = u.IdForShow,
+                                               IsRegister = u.IsRegister,
+                                               Login = u.Login,
+                                               Phone = u.Phone,
+                                               PilotPrivilag = u.PilotPrivilag
+                                           }).ToListAsync();
+            int currShowId = showUserTable.CurrentId;
+            int minId = userLst.Min(i => i.IdForShow);
+
+            if (currShowId == minId)
+                return null;
+            List<int> showUserIdList = userLst.Select(i => i.IdForShow).ToList();
+            showUserIdList.Sort();
+            // меняем текущий просматриваемый currId
+
+            currShowId = showUserIdList.LastOrDefault(i => i < currShowId);
+
+            UserDTO result = userLst.FirstOrDefault(i => i.IdForShow == currShowId);
+            if(result.ChatId == chatid)
+            {
+                result = userLst.FirstOrDefault(i => i.IdForShow < currShowId);
+                if (result == null)
+                    return null;
+            }
+            showUserTable.CurrentId = result.IdForShow;
+            await showUserRepository.Update(showUserTable);
+            return result;
+        }
     }
 }

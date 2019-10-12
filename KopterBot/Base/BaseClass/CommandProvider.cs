@@ -18,11 +18,29 @@ namespace KopterBot.Base.BaseClass
             this.client = client;
             this.provider = provider;
         }
-        private CreateBuisnessTask _createBuisnessTask;
-        private BuisnessRegistration _buisnessRegistration;
-        private StopChat _stopChat;
-        private RegistrationPilotCommand registrationPilotCommand;
-        private ShowOrders _showOrders;
 
+        private PilotCommandProvider _pilotCommandProvider;
+
+        private BuisnessCommandsProvider _buisnessCommandProvider;
+
+        public BuisnessCommandsProvider buisnessCommandProvider
+        {
+            get
+            {
+                if (_buisnessCommandProvider == null)
+                    _buisnessCommandProvider = new BuisnessCommandsProvider(client, provider);
+                return _buisnessCommandProvider;
+            }
+        }
+
+        public PilotCommandProvider pilotCommandProvider
+        {
+            get
+            {
+                if (_pilotCommandProvider == null)
+                    _pilotCommandProvider = new PilotCommandProvider(client, provider);
+                return _pilotCommandProvider;
+            }
+        }
     }
 }

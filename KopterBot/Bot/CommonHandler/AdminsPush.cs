@@ -44,10 +44,10 @@ namespace KopterBot.Bot.CommonHandler
                 $"Адрес доставки:{proposal.Adress}\n " +
                 $"Адрес определенный с геопозиции:{proposal.RealAdress}";
 
-            foreach(long _chatid in admins)
+            admins.ForEach(async (item) =>
             {
-               await client.SendTextMessageAsync(_chatid, message);
-            }
+                await client.SendTextMessageAsync(item, message);
+            });
         }
     }
 }

@@ -10,6 +10,10 @@ namespace KopterBot.Base.BaseClass
         protected TelegramBotClient client;
         protected MainProvider provider;
 
-        public BaseCommandProvider(TelegramBotClient client,MainProvider provider) { }
+        public BaseCommandProvider(TelegramBotClient client,MainProvider provider)
+        {
+            this.client = client;
+            this.provider = provider;
+        }
     }
 }

@@ -4,6 +4,7 @@ using KopterBot.Chat.CallBack;
 using KopterBot.DTO;
 using KopterBot.Interfaces;
 using KopterBot.PilotCommands;
+using KopterBot.PilotCommands.CallBacks;
 using KopterBot.Repository;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -17,7 +18,7 @@ using Telegram.Bot.Types;
 
 namespace KopterBot.Bot
 {
-    class CallBackHandler:RepositoryProvider,ICallbackHandler
+    class CallBackHandler:ICallbackHandler
     {
         // сделать калл-бэк провайдер
 
@@ -27,6 +28,7 @@ namespace KopterBot.Bot
         RequestOfferCallBack offerCallback;
         ShowMyOffersCallBack myOffersCallback;
         StartDialogCallBack startDialogCallBack;
+        CallBackShowUsers showUsersCallback;
         public CallBackHandler(TelegramBotClient client,MainProvider provider)
         {
             this.provider = provider;
@@ -35,16 +37,9 @@ namespace KopterBot.Bot
             offerCallback = new RequestOfferCallBack(client, provider);
             myOffersCallback = new ShowMyOffersCallBack(client, provider);
             startDialogCallBack = new StartDialogCallBack(client, provider);
+            showUsersCallback = new CallBackShowUsers(client, provider);
         }
 
-
-        #region PrivateHandlers
-        private async Task CallBackHandler_Confirm(long chatid)
-        {
-            HubDTO hub = await hubRepository.Get().FirstOrDefaultAsync(i => i.ChatIdReceiver == chatid);
-            //await hubRepository.ConfirmDialog("Начать", hub.ChatIdCreater, chatid);
-        }
-        #endregion
 
         public async Task BaseCallBackHandler(CallbackQueryEventArgs callback)
         {
@@ -73,6 +68,10 @@ namespace KopterBot.Bot
             if(callback.CallbackQuery.Data == "confirm")
             {
                 await startDialogCallBack.StartCommenication(callback);
+            }
+            if(callback.CallbackQuery.Data == "ShowUserNext" || callback.CallbackQuery.Data == "ShowUserPrevious")
+            {
+                await showUsersCallback.SendCallBack(callback);
             }
         }
     }

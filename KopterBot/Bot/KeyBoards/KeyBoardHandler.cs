@@ -310,6 +310,22 @@ namespace KopterBot.Bot
            });
         }
 
+        public static IReplyMarkup CallBackShowForUser()
+        {
+            return new InlineKeyboardMarkup(new InlineKeyboardButton[][]
+            {
+                
+                new[]
+                {
+                    new InlineKeyboardButton(){Text = "⏩",CallbackData="ShowUserNext"}
+                },
+                new[]
+                {
+                    new InlineKeyboardButton(){Text = "⏪",CallbackData="ShowUserPrevious"}
+                }
+           });
+        }
+
         public static IReplyMarkup CallBackShowOrdersForBuisnessman()
         {
             return new InlineKeyboardMarkup(new InlineKeyboardButton[][]
