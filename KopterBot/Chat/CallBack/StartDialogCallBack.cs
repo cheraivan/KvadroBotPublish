@@ -1,8 +1,10 @@
 ﻿using KopterBot.Base.BaseClass;
 using KopterBot.Bot;
+using KopterBot.Commons;
 using KopterBot.DTO;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using Telegram.Bot;
@@ -65,9 +67,15 @@ namespace KopterBot.Chat.CallBack
             if (chatIds.Length == 0)
                 throw new System.Exception("Dialog is incorrect");
 
+            //ПРОВЕРКА ВОЗМОЖНО БИЗНЕСМЕН В ДИАЛОГЕ 
+
             await provider.hubService.ConfirmDialog(chatIdReceiver, chatid, true);
 
-            await client.SendTextMessageAsync(chatIdReceiver, "Подключение установлено", 0, false, false, 0, KeyBoardHandler.EndDialog());
+            List<string> Surname = await provider.userService.GetSurNames(chatid, chatIdReceiver);
+            DateTime now = DateTime.Now;
+            await File.AppendAllTextAsync($"{chatid}" + " "+$"{chatIdReceiver}"+".txt",$"Начало диалога:\n{now}\n");
+
+            await client.SendTextMessageAsync(chatIdReceiver, "Подключение установлено", 0, false, false, 0, KeyBoardHandler.EndDialogForBuisnessMan());
             await client.SendTextMessageAsync(chatid, "Подключение установлено", 0, false, false, 0, KeyBoardHandler.EndDialog());
         }
 

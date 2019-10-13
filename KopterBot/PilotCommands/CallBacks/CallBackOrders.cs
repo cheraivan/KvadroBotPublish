@@ -37,6 +37,7 @@ namespace KopterBot.PilotCommands
                 if (task == null)
                 {
                     await client.SendTextMessageAsync(chatid, "Это первая задача");
+                    return;
                 }
                 int messageId = await provider.showOrderService.GetMessageId(chatid);
                 string message = $"Заявка номер: {task.Id} \n" +

@@ -11,6 +11,15 @@ namespace KopterBot.Services
 {
     class UserService:RepositoryProvider
     {
+        public async ValueTask<List<string>> GetSurNames(long chatid1,long chatid2)
+        {
+            List<string> lst = new List<string>();
+            lst = await userRepository.Get().Where(i => i.ChatId == chatid1 || i.ChatId == chatid2)
+                .Select(j => j.FIO)
+                .ToListAsync();
+            return lst;
+        }
+
         public async Task<UserDTO> FindUserByPredicate(Func<UserDTO,bool> predicate)
         {
             IQueryable<UserDTO> users = userRepository.Get();

@@ -10,11 +10,24 @@ using Telegram.Bot;
 
 namespace KopterBot.Chat
 {
-    class StopChat:BaseCommand 
+    class ChatCommands:BaseCommand 
     {
-        public StopChat(TelegramBotClient client,MainProvider provider) : base(client, provider) { }
+        public ChatCommands(TelegramBotClient client,MainProvider provider) : base(client, provider) { }
 
-        public async Task Request(long chatid)
+        public async Task ConfirmPilot(long chatid)
+        {
+            long[] chatIds = await provider.hubService.GetChatId(chatid);
+            UserDTO user = await provider.userService.FindById(chatIds[1]);
+
+            BuisnessTaskDTO task = await provider.buisnessTaskService.LastTaskForUser(user.ChatId);
+            task.ChatIdPerformer = chatIds[0];
+            await provider.buisnessTaskService.Update(task);
+
+            await client.SendTextMessageAsync(chatid, "Пилот успешно утвержден");
+            await client.SendTextMessageAsync(chatIds[1], "Вас утвердили на этот заказ");
+        }
+
+        public async Task EndChat(long chatid)
         {
             if (!await provider.hubService.IsChatActive(chatid))
             {

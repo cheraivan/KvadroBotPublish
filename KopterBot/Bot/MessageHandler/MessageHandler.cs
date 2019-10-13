@@ -35,7 +35,7 @@ namespace KopterBot.Bot
         TelegramBotClient client;
         MainProvider provider;
         CommandProvider commandProvider;
-        StopChat stopChat;
+        ChatCommands chatCommands;
         AuthenticateSystem authSystem;
         AdminHandler adminHandler;
         public MessageHandler(TelegramBotClient client, MainProvider provider,CommandProvider commandProvider,AdminHandler adminHandler)
@@ -47,7 +47,7 @@ namespace KopterBot.Bot
             this.adminHandler = adminHandler;
 
             authSystem = new AuthenticateSystem(client,provider);
-            stopChat = new StopChat(client, provider);
+            chatCommands = new ChatCommands(client, provider);
         }
 
         private async Task CommandHandler_Start(long chatid)
@@ -70,7 +70,12 @@ namespace KopterBot.Bot
            
             if(messageText == "Закончить диалог")
             {
-                await stopChat.Request(chatid);
+                await chatCommands.EndChat(chatid);
+                return;
+            }
+            if(messageText == "Утвердить пилота")
+            {
+                await chatCommands.ConfirmPilot(chatid);
                 return;
             }
 
@@ -100,6 +105,7 @@ namespace KopterBot.Bot
             {
                 // не делаем return;
                 await authSystem.GiveAdminPrivilage(user);
+                await client.SendTextMessageAsync(chatid, "Вы зашли как администратор", 0, false, false, 0, AdminKeyBoardHandler.Start_Murkup());
             }
             if(await authSystem.IsAdmin(user))
             {
@@ -116,8 +122,6 @@ namespace KopterBot.Bot
                 await client.SendTextMessageAsync(chatid, "Вы уже зарегестрированы", 0, false, false, 0, KeyBoardHandler.Murkup_BuisnessmanMenu());
                 return;
             }
-
-
             if (messageText == "SOS" && await authSystem.isAllowedUser(user,2))
             {
                 await client.SendTextMessageAsync(chatid, "Выберите один из вариантов", 0, false, false, 0, KeyBoardHandler.VariantSOS());

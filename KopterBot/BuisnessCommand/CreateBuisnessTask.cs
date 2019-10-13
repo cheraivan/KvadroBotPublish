@@ -1,4 +1,5 @@
 ﻿using KopterBot.Base.BaseClass;
+using KopterBot.Bot.CommonHandler;
 using KopterBot.DTO;
 using KopterBot.Services;
 using System;
@@ -53,6 +54,8 @@ namespace KopterBot.BuisnessCommand
             {
                 currTask.Sum = Convert.ToInt32(message);
                 await provider.buisnessTaskService.Update(currTask);
+                AdminsPush push = new AdminsPush();
+                await push.MessageAboutCreateTask(client, provider, chatid);
                 await client.SendTextMessageAsync(chatid, "Задача успешно создана");
                 return;
             }

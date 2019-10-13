@@ -19,6 +19,28 @@ namespace KopterBot.Bot.CommonHandler
         {
             propose = new CountProposeHandler();
         }
+        public async Task MessageAboutCreateTask(TelegramBotClient client,ServiceProvider provider,long chatid)
+        {
+            int countAdmin = await provider.adminService.CountAdmins();
+            if (countAdmin == 0)
+                return;
+            List<long> admins = await provider.adminService.GetChatId();
+
+            int numberOfPurpost = await propose.GetCount();
+            UserDTO user = await provider.userService.FindUserByPredicate(i => i.ChatId == chatid);
+            BuisnessTaskDTO task = await provider.buisnessTaskService.LastTaskForUser(chatid);
+        
+            string message = $"Создана заявка:{task.Id}\n " +
+                $"Создал пользователь: {user.FIO}\n " +
+                $"Телефон пользователя: {user.Phone} \n" +
+                $"Задача в регионе:{task.Region} \n " +
+                $"Описание задачи:{task.Description}\n " +
+                $"Сумма: {task.Sum}";
+            admins.ForEach(async (items) =>
+            {
+                await client.SendTextMessageAsync(items, message);
+            });
+        }
         public async Task MessageAboutRegistrationPilot(TelegramBotClient  client ,ServiceProvider provider,long chatid)
         {
             int countAdmin = await provider.adminService.CountAdmins();

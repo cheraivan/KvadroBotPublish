@@ -148,7 +148,12 @@ namespace KopterBot.Services
             {
                 order = await showOrdersRepository.Get().FirstOrDefaultAsync(i => i.ChatId == chatid);
                 if (order == null)
-                    throw new System.Exception("order cannot be null");
+                {
+                    order = new ShowOrdersDTO();
+                    order.ChatId = chatid;
+                    order.CurrentProductId = await buisnessTaskRepository.MinId(chatid);
+                    await showOrdersRepository.Create(order);
+                }
                 order.CurrentProductId = await buisnessTaskRepository.MinId(chatid);
                 await showOrdersRepository.Update(order);
                 return;

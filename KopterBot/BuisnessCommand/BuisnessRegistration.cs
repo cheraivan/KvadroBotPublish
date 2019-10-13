@@ -27,6 +27,10 @@ namespace KopterBot.BuisnessCommand
 
             if (currentStep == 1)
             {
+                if(user == null)
+                {
+                    await provider.userService.AuthenticateUser(chatid);
+                }
                 user.FIO = message;
                 await provider.userService.Update(user);
                 await provider.userService.ChangeAction(chatid, "Корпоративная бизнесс-регистрация", ++currentStep);

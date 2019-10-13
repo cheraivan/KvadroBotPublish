@@ -42,7 +42,13 @@ namespace KopterBot.Bot
             client.OnMessage += async (object sender, MessageEventArgs args) =>
             {
                 var handler = scope.GetService<IMessageHandler>();
-                await handler.BaseHandlerMessage(args, args.Message.Text);
+                try
+                {
+                    await handler.BaseHandlerMessage(args, args.Message.Text);
+                }catch(System.Exception ex)
+                {
+
+                }
             };
         }
     }

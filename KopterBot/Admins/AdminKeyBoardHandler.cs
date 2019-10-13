@@ -15,15 +15,12 @@ namespace KopterBot.Bot
                 {
                     new[]
                     {
-                        new KeyboardButton("Просмотр заявок")
+                        new KeyboardButton("Модерирование чатов")
                     },
                     new[]
                     {
+                        new KeyboardButton("Модерирование пилотов"),
                         new KeyboardButton("Модерирование обьявлений")
-                    },
-                    new[]
-                    {
-                        new KeyboardButton("Просмотр логов")
                     }
                 },
                 ResizeKeyboard = true

@@ -57,6 +57,24 @@ namespace KopterBot.Bot
                 ResizeKeyboard = true
             };
         }
+        public static IReplyMarkup EndDialogForBuisnessMan()
+        {
+            return new ReplyKeyboardMarkup
+            {
+                Keyboard = new[]
+                {
+                    new[]
+                    {
+                        new KeyboardButton("Закончить диалог")
+                    },
+                    new[]
+                    {
+                        new KeyboardButton("Утвердить пилота")
+                    }
+                },
+                ResizeKeyboard = true
+            };
+        }
         public static IReplyMarkup EndDialog()
         {
             return new ReplyKeyboardMarkup

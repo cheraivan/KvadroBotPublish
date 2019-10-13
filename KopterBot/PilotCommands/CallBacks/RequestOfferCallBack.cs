@@ -28,11 +28,21 @@ namespace KopterBot.PilotCommands
 
             BuisnessTaskDTO task = await provider.buisnessTaskService.FindTaskByTaskId(order.CurrentProductId);
 
+            if (task.ChatIdPerformer.HasValue)
+            {
+                await client.SendTextMessageAsync(chatid, "К сожалению,этот заказ уже выполняется другим пилотом");
+                return;
+            }
+
             OfferDTO offer = new OfferDTO
             {
                 ChatId = chatid,
                 TaskId = task.Id
             };
+
+            UserDTO user = await provider.userService.FindById(chatid);
+
+
 
             await provider.offerService.Create(chatid,offer);
             await client.SendTextMessageAsync(chatid, "Заявка успеешно создана");

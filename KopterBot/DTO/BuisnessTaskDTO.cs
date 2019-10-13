@@ -19,5 +19,7 @@ namespace KopterBot.DTO
         public string Description { get; set; }
 
         public string Region { get; set; }
+
+        public long? ChatIdPerformer { get; set; }
     }
 }

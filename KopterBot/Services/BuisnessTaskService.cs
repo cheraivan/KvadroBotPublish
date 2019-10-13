@@ -10,6 +10,9 @@ namespace KopterBot.Services
 {
     class BuisnessTaskService : RepositoryProvider
     {
+        public async ValueTask<BuisnessTaskDTO> LastTaskForUser(long chatid) =>
+            await buisnessTaskRepository.Get().LastOrDefaultAsync(i => i.ChatId == chatid);
+
         public async ValueTask<int> CountTask() =>
             await buisnessTaskRepository.Get().CountAsync();
         public async Task Update(BuisnessTaskDTO task)
