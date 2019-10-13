@@ -6,5 +6,6 @@ namespace KopterBot.Chat
 {
     class ArchiveChat
     {
+
     }
 }

@@ -20,7 +20,8 @@ namespace KopterBot.DTO
         public string Phone { get; set; }
         public int IsRegister { get; set; }
         public int PilotPrivilag { get; set; } 
-        public int BuisnesPrivilag { get; set; } 
+        public int BuisnesPrivilag { get; set; }
+        public double? balance { get; set; }
         public StepDTO step { get; set; }
         public ICollection<ProposalDTO> proposals { get; set; }
 

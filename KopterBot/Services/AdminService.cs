@@ -18,8 +18,16 @@ namespace KopterBot.Services
         public async ValueTask<bool> IsAdmin(long chatid)
         {
             AdminDTO admin = await adminRepository.FindById(chatid);
-            return admin == null ? false
-                : admin.Wish == 1 ? false : true;
+            if (admin == null)
+                return false;
+            if (admin.Wish == 0)
+                return false;
+
+            return true;
+        }
+        public async ValueTask<AdminDTO> FindById(long chatid)
+        {
+            return await adminRepository.FindById(chatid);
         }
 
         public async Task ChangeWish(long chatid)
@@ -27,6 +35,7 @@ namespace KopterBot.Services
             AdminDTO admin = await adminRepository.FindById(chatid);
             int wish = admin.Wish;
             wish = wish == 0 ? 1 : 0;
+            admin.Wish = wish;
             await adminRepository.Update(admin);
         }
     }

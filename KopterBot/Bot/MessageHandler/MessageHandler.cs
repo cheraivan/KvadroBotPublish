@@ -23,6 +23,7 @@ using KopterBot.PilotCommands;
 using KopterBot.Chat;
 using KopterBot.PilotCommands.CallBacks;
 using KopterBot.SecurityMiddleWhere;
+using KopterBot.Payment;
 
 namespace KopterBot.Bot
 {
@@ -38,6 +39,7 @@ namespace KopterBot.Bot
         ChatCommands chatCommands;
         AuthenticateSystem authSystem;
         AdminHandler adminHandler;
+        AddCash addCash;
         public MessageHandler(TelegramBotClient client, MainProvider provider,CommandProvider commandProvider,AdminHandler adminHandler)
         {
             this.client = client;
@@ -48,6 +50,7 @@ namespace KopterBot.Bot
 
             authSystem = new AuthenticateSystem(client,provider);
             chatCommands = new ChatCommands(client, provider);
+            addCash = new AddCash(client, provider);
         }
 
         private async Task CommandHandler_Start(long chatid)
@@ -112,6 +115,14 @@ namespace KopterBot.Bot
                 await adminHandler.BaseAdminMessageHandler(message);
                 return;
             }
+
+            if(messageText == "Пополнить баланс")
+            {
+                await provider.userService.ChangeAction(chatid, "Пополнить баланс", 1);
+                await addCash.ReplenishAccount(message);
+                return;
+            }
+
             if(CommandList.RegistrationPilotCommandList().Contains(messageText) && user.PilotPrivilag!=0)
             {
                 await client.SendTextMessageAsync(chatid, "Вы уже зарегестрированы", 0, false, false, 0, KeyBoardHandler.ChangeKeyBoardPilot(user.PilotPrivilag));
@@ -245,6 +256,11 @@ namespace KopterBot.Bot
            
             if (action!=null)
             {
+                if(action == "Пополнить баланс")
+                {
+                    await addCash.ReplenishAccount(message);
+                    return;
+                }
                 if(action == "SOS")
                 {
                     await commandProvider.pilotCommandProvider.sosCommand.SosHandler(message);

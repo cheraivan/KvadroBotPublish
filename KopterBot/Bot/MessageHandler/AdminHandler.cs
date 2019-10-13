@@ -28,6 +28,13 @@ namespace KopterBot.Bot
             long chatid = args.Message.Chat.Id;
             string message = args.Message.Text;
 
+            if(message == "/unop")
+            {
+                await provider.adminService.ChangeWish(chatid);
+                await client.SendTextMessageAsync(chatid,"Выберите один из следующих вариантов",0,false,false,0,KeyBoardHandler.Murkup_Start_AfterChange());
+                return;
+            }
+
             if(message == "Модерирование чатов")
             {
 

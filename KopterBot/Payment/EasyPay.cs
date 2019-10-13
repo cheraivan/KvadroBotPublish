@@ -10,7 +10,7 @@ namespace KopterBot.Payment
 {
     class EasyPay
     {
-        public static string CheckCart()
+        public static string GetCart()
         {
             using (StreamReader reader = new StreamReader("Cart.txt"))
             {
@@ -21,7 +21,7 @@ namespace KopterBot.Payment
         private async static ValueTask<bool> IsExist(string PayId)
         {
             List<string> result = new List<string>();
-            using (StreamReader reader = new StreamReader("Cart.txt"))
+            using (StreamReader reader = new StreamReader("Checks.txt"))
             {
                 string line;
                 while((line = await reader.ReadLineAsync())!=null)
@@ -33,7 +33,7 @@ namespace KopterBot.Payment
                 return true;
             return false;
         }
-        public async static ValueTask<bool> IsPayCorrect(string PayId,string Sum)
+        public async static ValueTask<int?> IsPayCorrect(string PayId)
         {
             string url = Constant.EasyPayURL + PayId + "&contentType=text/html";
             WebRequest request = WebRequest.Create(url);
@@ -46,16 +46,18 @@ namespace KopterBot.Payment
                     content = await reader.ReadToEndAsync();
                 }
             }
-            string myCart = CheckCart();
+            string myCart = GetCart();
             if(content.IndexOf(myCart)!=-1)
             {
-                if(content.IndexOf(Sum)!=-1)
+                if (!await IsExist(PayId))
                 {
-                    if (!await IsExist(PayId))
-                        return true;
+                    await File.AppendAllTextAsync("Checks.txt", PayId);
+
+                    //вернуть правильную сумму
+                    return Convert.ToInt32(PayId); 
                 }
             }
-            return false;
+            return null;
         }
     }
 }

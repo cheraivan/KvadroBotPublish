@@ -54,21 +54,18 @@ namespace KopterBot.Services
         {
             List<long> result = new List<long>();
             ProposalDTO proposal = await proposalRepository.Get().FirstOrDefaultAsync(i => i.ChatId == chatid);
-            string region = "";
-            if(proposal != null)
-            {
-                if(proposal.RealAdress != null)
-                {
-                    int index = proposal.RealAdress.IndexOf(",")+2;
-                    int lastindex = proposal.RealAdress.IndexOf(",", index+1);
 
-                    for (int i = index; i < lastindex; i++)
-                        region += proposal.RealAdress[i];
-                }
+            if (proposal != null)
+            {
+                string region = proposal.Region;
+                result = await proposalRepository.Get().Where(i => i.Region == region)
+                    .Select(p => p.ChatId)
+                    .ToListAsync();
             }
-            result = await proposalRepository.Get().Where(i => i.RealAdress.IndexOf(region) != -1).
+
+         /*   result = await proposalRepository.Get().Where(i => i.RealAdress.IndexOf(region) != -1).
                 Select(p => p.ChatId)
-                .ToListAsync();
+                .ToListAsync();*/
             return result;
         }
 

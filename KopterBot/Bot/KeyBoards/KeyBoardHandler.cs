@@ -151,11 +151,12 @@ namespace KopterBot.Bot
                 {
                     new[]
                     {
-                        new KeyboardButton("Просмотреть свои заказы")
+                        new KeyboardButton("Просмотреть свои заказы"),
+                        new KeyboardButton("Создать новую задачу")
                     },
                     new[]
                     {
-                        new KeyboardButton("Создать новую задачу")
+                        new KeyboardButton("Пополнить баланс")
                     },
                     new[]
                     {

@@ -45,10 +45,8 @@ namespace KopterBot.Bot
                 try
                 {
                     await handler.BaseHandlerMessage(args, args.Message.Text);
-                }catch(System.Exception ex)
-                {
-
                 }
+                catch (System.FormatException) { }
             };
         }
     }

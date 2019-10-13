@@ -45,6 +45,16 @@ namespace KopterBot.PilotCommands
 
 
             await provider.offerService.Create(chatid,offer);
+
+            string message = $"Пилот {user.FIO} хочет выполнить ваш заказ. " +
+                $"Данные по заказу:\n " +
+                $"Id заказа:{task.Id} \n " +
+                $"Описание заказа:{task.Description} \n " +
+                $"Сумма заказа:{task.Sum} \n " +
+                $"Подробнее можете посмотреть в разделе просмотра своих заявок";
+
+            await client.SendTextMessageAsync(task.ChatId, message);
+
             await client.SendTextMessageAsync(chatid, "Заявка успеешно создана");
         }
     }
